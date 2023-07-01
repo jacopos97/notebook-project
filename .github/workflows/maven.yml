@@ -10,6 +10,8 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        env:
+            workdir: com.examples.notebook
 
         steps:
           - uses: actions/checkout@v3
@@ -26,10 +28,21 @@ jobs:
                 restore-keys: ${{ runner.os }}-m2-
           - name: Build with Maven
             run: >
-                mvn -f com.examples.notebook/pom.xml
-                clean verify -Pjacoco
+                mvn verify
+                -Pcoveralls
                 -DrepoToken=$COVERALLS_REPO_TOKEN
                 -DpullRequest=${{ github.event.pull_request.number }}
-                coveralls:report
+            working-directory: ${{ env.workdir }}
             env:
                 COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          - name: Generate JUnit Report
+            run: >
+                mvn surefire-report:report-only site:site -DgenerateReports=false
+            working-directory: ${{ env.workdir }}
+            if: ${{ failure() }}
+          - name: Archive JUnit Report
+            uses: actions/upload-artifact@v3
+            if: ${{ failure() }}
+            with:
+                name: surefire-report-jdk-17
+                path: '**/target/site
