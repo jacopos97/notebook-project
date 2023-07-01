@@ -25,4 +25,6 @@ jobs:
                 key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
                 restore-keys: ${{ runner.os }}-m2-
           - name: Build with Maven
-            run: mvn -f com.examples.notebook/pom.xml clean verify
+            run: >
+                mvn -f com.examples.myproject/pom.xml
+                clean verify -Pjacoco
