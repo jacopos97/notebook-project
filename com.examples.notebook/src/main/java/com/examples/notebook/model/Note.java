@@ -31,20 +31,23 @@ public class Note {
 	public String getDate() {
 		return date;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(body, date, id, title);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		Note other = (Note) obj;
-		return Objects.equals(id, other.id) && Objects.equals(title, other.title) &&
-				Objects.equals(body, other.body) && Objects.equals(date, other.date);
+		return Objects.equals(body, other.body) && Objects.equals(date, other.date) && Objects.equals(id, other.id)
+				&& Objects.equals(title, other.title);
 	}
+	
 }

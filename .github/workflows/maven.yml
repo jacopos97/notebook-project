@@ -3,6 +3,8 @@ name: Notebook app on java 17
 
 on:
     push:
+        branches:
+          - main
     pull_request:
 
 jobs:
