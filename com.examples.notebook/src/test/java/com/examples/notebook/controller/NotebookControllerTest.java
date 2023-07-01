@@ -88,7 +88,7 @@ public class NotebookControllerTest {
 		inOrder.verifyNoMoreInteractions();
 	}
 	
-	/*@Test
+	@Test
 	public void testDeleteNoteWhenNoteDoesNotExist() {
 		var date = "2000/01/01";
 		var title = "Title";
@@ -99,7 +99,7 @@ public class NotebookControllerTest {
 		verify(notebookView).
 			showError("No existing note with id " + date + "-" + title, noteToDelete);
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
-	}*/
+	}
 	
 	@Test
 	public void testModifyNoteWhenNoteExists() {
