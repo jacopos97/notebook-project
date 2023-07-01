@@ -3,6 +3,8 @@ name: Notebook app on java 17
 
 on:
     push:
+        branches:
+          - main
     pull_request:
 
 jobs:
@@ -23,4 +25,11 @@ jobs:
                 key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
                 restore-keys: ${{ runner.os }}-m2-
           - name: Build with Maven
-            run: mvn -f com.examples.notebook/pom.xml clean verify
+            run: >
+                mvn -f com.examples.notebook/pom.xml
+                clean verify -Pjacoco
+                -DrepoToken=$COVERALLS_REPO_TOKEN
+                -DpullRequest=${{ github.event.pull_request.number }}
+                coveralls:report
+            env:
+                COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
