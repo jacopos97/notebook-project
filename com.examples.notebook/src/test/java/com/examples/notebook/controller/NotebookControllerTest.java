@@ -40,7 +40,7 @@ public class NotebookControllerTest {
 		closeable.close();
 	}
 	
-	/*@Test
+	@Test
 	public void testGetAllNotes() {
 		List<Note> notes = asList(new Note("2000/01/01", "Title", "Body"));
 		when(notesRepository.findAll()).
@@ -48,7 +48,7 @@ public class NotebookControllerTest {
 		notebookController.getAllNotes();
 		verify(notebookView).
 			showAllNotes(notes);
-	}*/
+	}
 	
 	@Test
 	public void testAddNoteWhenNoteDoesNotAlreadyExist() {
