@@ -28,3 +28,8 @@ jobs:
             run: >
                 mvn -f com.examples.notebook/pom.xml
                 clean verify -Pjacoco
+                -DrepoToken=$COVERALLS_REPO_TOKEN
+                -DpullRequest=${{ github.event.pull_request.number }}
+                coveralls:report
+            env:
+                COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
