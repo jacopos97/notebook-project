@@ -45,4 +45,4 @@ jobs:
             if: ${{ failure() }}
             with:
                 name: surefire-report-jdk-17
-                path: '**/target/site
+                path: '**/target/site'
