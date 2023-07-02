@@ -122,7 +122,7 @@ public class NotebookControllerTest {
 			thenReturn(null);
 		notebookController.modifyNote(noteToModify);
 		verify(notebookView).
-			showError("No existing note with id " + date + "-" + title, noteToModify);
+			showError(" existing note with id " + date + "-" + title, noteToModify);
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 
