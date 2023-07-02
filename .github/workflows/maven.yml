@@ -46,3 +46,6 @@ jobs:
             with:
                 name: surefire-report-jdk-17
                 path: '**/target/site'
+          - name: Run Mutation Testing
+            run: mvn org.pitest:pitest-maven:mutationCoverage
+            if: github.event_name == 'pull_request'
