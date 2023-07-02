@@ -49,3 +49,4 @@ jobs:
           - name: Run Mutation Testing
             run: mvn org.pitest:pitest-maven:mutationCoverage
             if: github.event_name == 'pull_request'
+            working-directory: ${{ env.workdir }}
