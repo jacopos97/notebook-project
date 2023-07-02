@@ -53,7 +53,7 @@ jobs:
             working-directory: ${{ env.workdir }}
           - name: Archive Mutation Testing
             uses: actions/upload-artifact@v3
-            if: steps.mutation.outcome == failure
+            if: steps.mutation.outcome == 'failure''
             with:
                 name: mutation-testing
                 path: '**/target/pit-reports'
