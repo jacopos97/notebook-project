@@ -47,14 +47,13 @@ jobs:
                 name: surefire-report
                 path: '**/target/site'
           - name: Run Mutation Testing
+            id: mutation
             run: mvn org.pitest:pitest-maven:mutationCoverage
             if: github.event_name == 'pull_request'
             working-directory: ${{ env.workdir }}
           - name: Archive Mutation Testing
             uses: actions/upload-artifact@v3
-            if:
-                ${{ failure() }}
-                github.event_name == 'pull_request'
+            if: steps.mutation.outcome == failure
             with:
                 name: mutation-testing
                 path: '**/target/pit-reports'
