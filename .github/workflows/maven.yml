@@ -63,7 +63,7 @@ jobs:
             run: >
                 mvn sonar:sonar
                 -Dsonar.organization=jacopos97
-                -Dsonar.projectKey=jacopos97
+                -Dsonar.projectKey=jacopos97_notebook-project
                 -Dsonar.host.url=https://sonarcloud.io
             working-directory: ${{ env.workdir }}
             env:
