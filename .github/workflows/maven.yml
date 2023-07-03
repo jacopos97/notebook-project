@@ -62,7 +62,7 @@ jobs:
           - name: Verify code quality
             run: >
                 mvn sonar:sonar
-                -Dsonar.organization=jacopos97
+                -Dsonar.organization=jacopos97-github
                 -Dsonar.host.url=https://sonarcloud.io
             working-directory: ${{ env.workdir }}
             env:
