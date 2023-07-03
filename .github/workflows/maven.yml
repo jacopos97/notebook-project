@@ -67,5 +67,3 @@ jobs:
                 -Dsonar.projectKey=jacopos97_notebook-project
                 -Dsonar.host.url=https://sonarcloud.io
             working-directory: ${{ env.workdir }}
-            env:
-                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
