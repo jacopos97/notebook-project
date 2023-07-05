@@ -5,9 +5,9 @@ import java.util.Objects;
 public class Note {
 	
 	private String id;
+	private String date;
 	private String title;
 	private String body;
-	private String date;
 	
 	public Note(String date, String title, String body) {
 		this.date = date;
