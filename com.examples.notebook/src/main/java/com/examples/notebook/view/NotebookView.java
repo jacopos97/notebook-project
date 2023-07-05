@@ -10,7 +10,7 @@ public interface NotebookView {
 
 	void noteAdded(Note noteAdded);
 
-	void showError(String string, Note note);
+	void showError(String errorMessage);
 
 	void noteRemoved(Note noteRemoved);
 

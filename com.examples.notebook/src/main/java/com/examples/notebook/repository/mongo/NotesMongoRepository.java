@@ -40,19 +40,28 @@ public class NotesMongoRepository implements NotesRepository {
 
 	@Override
 	public void save(Note noteToAdd) {
-		// TODO Auto-generated method stub
-
+		noteCollection.insertOne(
+				new Document()
+					.append("date", noteToAdd.getDate())
+					.append("title", noteToAdd.getTitle())
+					.append("body", noteToAdd.getBody())
+					.append("id", noteToAdd.getDate() + "-" + noteToAdd.getTitle()));
 	}
 
 	@Override
-	public void delete(Note noteToDelete) {
-		// TODO Auto-generated method stub
-
+	public void delete(String idNoteToDelete) {
+		noteCollection.deleteOne(Filters.eq("id", idNoteToDelete));
 	}
 
 	@Override
-	public void modify(Note noteToModify) {
-		// TODO Auto-generated method stub
+	public void modify(String idNoteToModify, Note noteModified) {
+		noteCollection.replaceOne(
+				Filters.eq("id", idNoteToModify),
+				new Document()
+					.append("date", noteModified.getDate())
+					.append("title", noteModified.getTitle())
+					.append("body", noteModified.getBody())
+					.append("id", noteModified.getDate() + "-" + noteModified.getTitle()));
 	}
 	
 	private Note fromDocumentToNote(Document d) {

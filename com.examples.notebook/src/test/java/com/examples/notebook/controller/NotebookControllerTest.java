@@ -3,8 +3,6 @@ package com.examples.notebook.controller;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +40,7 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testGetAllNotes() {
-		List<Note> notes = asList(new Note("2000/01/01", "Title", "Body"));
+		var notes = asList(new Note("2000/01/01", "Title", "Body"));
 		when(notesRepository.findAll()).
 			thenReturn(notes);
 		notebookController.getAllNotes();
@@ -52,8 +50,8 @@ public class NotebookControllerTest {
 	
 	@Test
 	public void testAddNoteWhenNoteDoesNotAlreadyExist() {
-		Note note = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01"+"-"+"Title")).
+		var note = new Note("2000/01/01", "Title", "Body");
+		when(notesRepository.findById("2000/01/01-Title")).
 			thenReturn(null);
 		notebookController.addNote(note);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
@@ -66,63 +64,61 @@ public class NotebookControllerTest {
 	public void testAddNoteWhenNoteAlreadyExists() {
 		var date = "2000/01/01";
 		var title = "Title";
-		Note noteToAdd = new Note(date, title, "BodyOfTheNewNote");
-		Note existingNote = new Note(date, title, "BodyOfTheExistingNote");
+		var noteToAdd = new Note(date, title, "BodyOfTheNewNote");
+		var existingNote = new Note(date, title, "BodyOfTheExistingNote");
 		when(notesRepository.findById(date + "-" + title)).
 			thenReturn(existingNote);
 		notebookController.addNote(noteToAdd);
 		verify(notebookView).
-			showError("Already existing note with id " + date + "-" + title, existingNote);
+			showError("Already existing note with id " + existingNote.getId());
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 	
 	@Test
 	public void testDeleteNoteWhenNoteExists() {
-		Note noteToDelete = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01" + "-" + "Title")).
+		var noteToDelete = new Note("2000/01/01", "Title", "Body");
+		when(notesRepository.findById("2000/01/01-Title")).
 			thenReturn(noteToDelete);
 		notebookController.deleteNote(noteToDelete);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
-		inOrder.verify(notesRepository).delete(noteToDelete);
+		inOrder.verify(notesRepository).delete(noteToDelete.getId());
 		inOrder.verify(notebookView).noteRemoved(noteToDelete);
 		inOrder.verifyNoMoreInteractions();
 	}
 	
 	@Test
 	public void testDeleteNoteWhenNoteDoesNotExist() {
-		var date = "2000/01/01";
-		var title = "Title";
-		Note noteToDelete = new Note(date, title, "Body");
-		when(notesRepository.findById(date + "-" + title)).
+		var noteToDelete = new Note("2000/01/01", "Title", "Body");
+		when(notesRepository.findById("2000/01/01-Title")).
 			thenReturn(null);
 		notebookController.deleteNote(noteToDelete);
 		verify(notebookView).
-			showError("No existing note with id " + date + "-" + title, noteToDelete);
+			showError("No existing note with id " + noteToDelete.getId());
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 	
 	@Test
-	public void testModifyNoteWhenNoteExists() {
-		Note noteToModify = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01" + "-" + "Title")).
-			thenReturn(noteToModify);
-		notebookController.modifyNote(noteToModify);
+	public void testModifyNoteWhenNoteDoesNotChangeId() {
+		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
+		when(notesRepository.findById("2000/01/01" + "-" + "OldTitle"))
+			.thenReturn(noteToModify);
+		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
-		inOrder.verify(notesRepository).modify(noteToModify);
-		inOrder.verify(notebookView).noteModified(noteToModify);
+		inOrder.verify(notesRepository).modify("2000/01/01-OldTitle", noteModified);
+		inOrder.verify(notebookView).noteModified(noteModified);
 		inOrder.verifyNoMoreInteractions();
 	}
 	
 	@Test
 	public void testModifyNoteWhenNoteDoesNoteExist() {
-		var date = "2000/01/01";
-		var title = "Title";
-		Note noteToModify = new Note(date, title, "Body");
-		when(notesRepository.findById(date + "-" + title)).
+		var oldId= "2000/01/01-OldTitle";
+		Note noteModified = new Note("2000/01/02", "Title", "Body");
+		when(notesRepository.findById("2000/01/01-OldTitle")).
 			thenReturn(null);
-		notebookController.modifyNote(noteToModify);
+		notebookController.modifyNote("2000/01/01-OldTitle", noteModified);
 		verify(notebookView).
-			showError("No existing note with id " + date + "-" + title, noteToModify);
+			showError("No existing note with id " + oldId);
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 
