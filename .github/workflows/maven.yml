@@ -39,16 +39,16 @@ jobs:
             working-directory: ${{ env.workdir }}
             env:
                 COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-          - name: Generate JUnit Report
+          - name: Generate JUnit Reports
             run: >
-                mvn surefire-report:report-only site:site -DgenerateReports=false
+                mvn surefire-report:report-only surefire-report:failsafe-report-only site:site -DgenerateReports=false
             working-directory: ${{ env.workdir }}
             if: ${{ failure() }}
           - name: Archive JUnit Report
             uses: actions/upload-artifact@v3
             if: ${{ failure() }}
             with:
-                name: surefire-report
+                name: Reports
                 path: '**/target/site'
           - name: Run Mutation Testing
             id: mutation

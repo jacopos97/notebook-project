@@ -54,7 +54,7 @@ public class NotesMongoRepositoryIT {
 	@Test
 	public void testFindByIdNotFound() {
 		assertThat(notesMongoRepository.findById("2000/01/01-Title"))
-		.isNull();
+			.isNull();
 	}
 	
 	@Test
