@@ -62,7 +62,7 @@ public class NotesMongoRepositoryIT {
 		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
 		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
 		assertThat(notesMongoRepository.findById("2000/01/02-Title2"))
-			.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
+			.isEqualTo(new Note("2000/01/01", "Title2", "Body2"));
 	}
 	
 	@Test
