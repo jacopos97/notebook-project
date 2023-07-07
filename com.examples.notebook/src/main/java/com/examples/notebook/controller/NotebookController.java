@@ -19,11 +19,9 @@ public class NotebookController {
 	}
 
 	public void addNote(Note noteToAdd) {
-		Note existingNote = findNoteInRepository(noteToAdd);
-		if (existingNote != null) {
+		if (notesRepository.findById(noteToAdd.getId())!= null) {
 			notebookView.showError(
-					"Already existing note with id " + noteToAdd.getDate() + "-" + noteToAdd.getTitle(),
-					existingNote);
+					"Already existing note with id " + noteToAdd.getId());
 			return;
 		}
 		notesRepository.save(noteToAdd);
@@ -31,29 +29,23 @@ public class NotebookController {
 	}
 
 	public void deleteNote(Note noteToDelete) {
-		if (findNoteInRepository(noteToDelete) == null) {
+		if (notesRepository.findById(noteToDelete.getId()) == null) {
 			notebookView.showError(
-					"No existing note with id " + noteToDelete.getDate() + "-" + noteToDelete.getTitle(),
-					noteToDelete);
+					"No existing note with id " + noteToDelete.getId());
 			return;
 		}
-		notesRepository.delete(noteToDelete);
+		notesRepository.delete(noteToDelete.getId());
 		notebookView.noteRemoved(noteToDelete);
 	}
 	
-	public void modifyNote(Note noteToModify) {
-		if (findNoteInRepository(noteToModify) == null) {
+	public void modifyNote(String idNoteToModify, Note noteModified) {
+		if (notesRepository.findById(idNoteToModify) == null) {
 			notebookView.showError(
-					"No existing note with id " + noteToModify.getDate() + "-" + noteToModify.getTitle(),
-					noteToModify);
+					"No existing note with id " + idNoteToModify);
 			return;
 		}
-		notesRepository.modify(noteToModify);
-		notebookView.noteModified(noteToModify);
-	}
-	
-	private Note findNoteInRepository(Note noteToAdd) {
-		return notesRepository.findById(noteToAdd.getId());
+		notesRepository.modify(idNoteToModify, noteModified);
+		notebookView.noteModified(noteModified);
 	}
 
 }

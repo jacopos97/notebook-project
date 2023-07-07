@@ -5,6 +5,7 @@
 	<groupId>com.examples</groupId>
 	<artifactId>notebook</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<url>com.examples.notebook</url>
 
 	<name>notebook</name>
 
@@ -40,6 +41,16 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.12.14</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.4.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -48,6 +59,9 @@
 				<plugin>
 					<artifactId>maven-surefire-report-plugin</artifactId>
 					<version>3.1.0</version>
+					<configuration>
+						<linkXRef>false</linkXRef>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
@@ -90,14 +104,13 @@
 					<configuration>
 						<targetClasses>
 							<param>com.examples.notebook.controller.*</param>
-							<param>com.examples.notebook.repository.*</param>
 							<param>com.examples.notebook.view.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>com.examples.notebook.*</param>
+							<param>com.examples.notebook.controller.*</param>
 						</targetTests>
 						<mutators>
-							<mutator>STRONGER</mutator>
+							<mutator>DEFAULTS</mutator>
 						</mutators>
 						<mutationThreshold>100</mutationThreshold>
 					</configuration>
@@ -109,6 +122,78 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/it/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<systemPropertyVariables>
+						<mongo.port>${mongo.mapped.port}</mongo.port>
+					</systemPropertyVariables>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.43.0</version>
+				<configuration>
+					<images>
+						<image>
+							<name>mongo:4.4.3</name>
+							<run>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker-start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<profiles>
