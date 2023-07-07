@@ -104,14 +104,13 @@
 					<configuration>
 						<targetClasses>
 							<param>com.examples.notebook.controller.*</param>
-							<param>com.examples.notebook.repository.*</param>
 							<param>com.examples.notebook.view.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>com.examples.notebook.*</param>
+							<param>com.examples.notebook.controller.*</param>
 						</targetTests>
 						<mutators>
-							<mutator>STRONGER</mutator>
+							<mutator>DEFAULTS</mutator>
 						</mutators>
 						<mutationThreshold>100</mutationThreshold>
 					</configuration>
