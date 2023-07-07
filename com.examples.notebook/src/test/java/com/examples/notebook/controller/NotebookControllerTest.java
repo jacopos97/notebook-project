@@ -105,7 +105,7 @@ public class NotebookControllerTest {
 			.thenReturn(noteToModify);
 		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
-		inOrder.verify(notesRepository).modify("2000/01/01-OldTitle", noteModified);
+		inOrder.verify(notesRepository).modify("2000/01/0-OldTitle", noteModified);
 		inOrder.verify(notebookView).noteModified(noteModified);
 		inOrder.verifyNoMoreInteractions();
 	}
