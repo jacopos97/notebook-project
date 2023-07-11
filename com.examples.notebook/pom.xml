@@ -120,7 +120,6 @@
 					<configuration>
 						<targetClasses>
 							<param>com.examples.notebook.controller.*</param>
-							<param>com.examples.notebook.view.*</param>
 						</targetClasses>
 						<targetTests>
 							<param>com.examples.notebook.controller.*</param>

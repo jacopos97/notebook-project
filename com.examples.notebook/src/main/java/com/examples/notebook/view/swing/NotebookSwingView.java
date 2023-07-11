@@ -52,10 +52,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	
 	private NotebookController notebookController;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -66,7 +63,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 				}
 			}
 		});
-	}
+	}*/
 
 	DefaultListModel<Note> getListNotesModel() {
 		return listNotesModel;
