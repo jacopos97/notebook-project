@@ -61,7 +61,7 @@ public class NotebookControllerTest {
 	}
 	
 	@Test
-	public void testAddNoteWhenNoteAlreadyExists() {
+	public void testAddNoteWhenANoteWithTheSameIdAlreadyExists() {
 		var date = "2000/01/01";
 		var title = "Title";
 		var noteToAdd = new Note(date, title, "BodyOfTheNewNote");
@@ -70,8 +70,17 @@ public class NotebookControllerTest {
 			thenReturn(existingNote);
 		notebookController.addNote(noteToAdd);
 		verify(notebookView).
-			showError("Already existing note with id " + existingNote.getId());
+			showError("Change date and/or title. Already exist a note with the same attributes.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
+	}
+	
+	@Test
+	public void testAddNoteWhenNoteHasANotValidDate() {
+		var note = new Note("2000/01/051", "Title", "Body");
+		notebookController.addNote(note);
+		verify(notebookView).
+			showError("Note's date must have yyyy/mm/dd form.");
+		verifyNoMoreInteractions(notesRepository);
 	}
 	
 	@Test
@@ -111,14 +120,41 @@ public class NotebookControllerTest {
 	}
 	
 	@Test
-	public void testModifyNoteWhenNoteDoesNoteExist() {
-		var oldId= "2000/01/01-OldTitle";
-		Note noteModified = new Note("2000/01/02", "Title", "Body");
+	public void testModifyNoteWhenNoteDoesNotExist() {
+		var idNoteToModify = "2000/01/01-OldTitle";
+		var noteModified = new Note("2002/02/0872", "NewTitle", "NewBody");
 		when(notesRepository.findById("2000/01/01-OldTitle")).
 			thenReturn(null);
+		notebookController.modifyNote(idNoteToModify, noteModified);
+		verify(notebookView).
+		showError("No existing note with id " + idNoteToModify);
+		verifyNoMoreInteractions(ignoreStubs(notesRepository));
+	}
+	
+	@Test
+	public void testModifyNoteWhenModifiedNoteChangeItsIdInAnExistentId() {
+		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
+		var noteInRepository = new Note("2002/02/02", "NewTitle", "Body");
+		when(notesRepository.findById("2000/01/01-OldTitle")).
+			thenReturn(noteToModify);
+		when(notesRepository.findById("2002/02/02" + "-" + "NewTitle"))
+			.thenReturn(noteInRepository);
+		notebookController.modifyNote(noteToModify.getId(), noteModified);
+		verify(notebookView).
+			showError("Change date and/or title. Already exist a note with the same attributes.");
+		verifyNoMoreInteractions(ignoreStubs(notesRepository));
+	}
+	
+	@Test
+	public void testModifyNoteWhenNoteHasANotValidDate() {
+		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002/02/0872", "NewTitle", "NewBody");
+		when(notesRepository.findById("2000/01/01-OldTitle")).
+			thenReturn(noteToModify);
 		notebookController.modifyNote("2000/01/01-OldTitle", noteModified);
 		verify(notebookView).
-			showError("No existing note with id " + oldId);
+			showError("Note's date must have yyyy/mm/dd form.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 
