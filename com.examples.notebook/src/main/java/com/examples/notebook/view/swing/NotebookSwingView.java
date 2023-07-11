@@ -23,6 +23,8 @@ import javax.swing.JTextArea;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
+
 import java.awt.Color;
 
 public class NotebookSwingView extends JFrame implements NotebookView {
@@ -42,7 +44,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	private JButton btnDelete;
 	private JButton btnAdd;
 	
-	private NotebookController notebookController;
+	private transient NotebookController notebookController;
 
 	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -75,7 +77,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 
 	public NotebookSwingView() {
 		setTitle("Notebook");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 560, 314);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
