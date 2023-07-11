@@ -1,5 +1,7 @@
 package com.examples.notebook.controller;
 
+import org.apache.commons.validator.GenericValidator;
+
 import com.examples.notebook.model.Note;
 import com.examples.notebook.repository.NotesRepository;
 import com.examples.notebook.view.NotebookView;
@@ -19,13 +21,10 @@ public class NotebookController {
 	}
 
 	public void addNote(Note noteToAdd) {
-		if (notesRepository.findById(noteToAdd.getId())!= null) {
-			notebookView.showError(
-					"Already existing note with id " + noteToAdd.getId());
-			return;
+		if (checkNoteValidity(noteToAdd)) {
+			notesRepository.save(noteToAdd);
+			notebookView.noteAdded(noteToAdd);
 		}
-		notesRepository.save(noteToAdd);
-		notebookView.noteAdded(noteToAdd);
 	}
 
 	public void deleteNote(Note noteToDelete) {
@@ -44,8 +43,23 @@ public class NotebookController {
 					"No existing note with id " + idNoteToModify);
 			return;
 		}
-		notesRepository.modify(idNoteToModify, noteModified);
-		notebookView.noteModified(noteModified);
+		if (checkNoteValidity(noteModified)) {
+			notesRepository.modify(idNoteToModify, noteModified);
+			notebookView.noteModified(noteModified);			
+		}
+	}
+
+	private boolean checkNoteValidity(Note noteModified) {
+		if (!GenericValidator.isDate(noteModified.getDate(), "yyyy/mm/dd", true)) {
+				notebookView.showError("Note's date must have yyyy/mm/dd form.");
+			return false;
+		}
+		if (notesRepository.findById(noteModified.getId()) != null) {
+			notebookView.showError(
+					"Change date and/or title. Already exist a note with the same attributes.");
+			return false;
+		}
+		return true;
 	}
 
 }
