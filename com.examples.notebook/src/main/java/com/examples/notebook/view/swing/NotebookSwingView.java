@@ -1,32 +1,22 @@
 package com.examples.notebook.view.swing;
 
-import java.awt.EventQueue;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.commons.validator.GenericValidator;
-
 import com.examples.notebook.controller.NotebookController;
 import com.examples.notebook.model.Note;
 import com.examples.notebook.view.NotebookView;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-//import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.DefaultListModel;
-//import com.jgoodies.forms.layout.FormLayout;
-//import com.jgoodies.forms.layout.ColumnSpec;
-//import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,6 +27,8 @@ import java.awt.Color;
 
 public class NotebookSwingView extends JFrame implements NotebookView {
 
+	private static final long serialVersionUID = -2049746861681669915L;
+	
 	private JPanel contentPane;
 	private JTextField textDate;
 	private JTextField textTitle;
@@ -81,9 +73,6 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		this.notebookController = notebookController;
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public NotebookSwingView() {
 		setTitle("Notebook");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,32 +81,32 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 0, 0, 90, 0, 73, 0, 0 };
-		gbl_contentPane.rowHeights = new int[] { 0, 0, 0, 5, 0, 0, 20, 0 };
-		gbl_contentPane.columnWeights = new double[] { 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
-		contentPane.setLayout(gbl_contentPane);
+		GridBagLayout gblContentPane = new GridBagLayout();
+		gblContentPane.columnWidths = new int[] { 0, 0, 90, 0, 73, 0, 0 };
+		gblContentPane.rowHeights = new int[] { 0, 0, 0, 5, 0, 0, 20, 0 };
+		gblContentPane.columnWeights = new double[] { 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gblContentPane.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		contentPane.setLayout(gblContentPane);
 
 		JLabel lblListaNote = new JLabel("Note List");
-		GridBagConstraints gbc_lblListaNote = new GridBagConstraints();
-		gbc_lblListaNote.insets = new Insets(0, 0, 5, 5);
-		gbc_lblListaNote.gridx = 0;
-		gbc_lblListaNote.gridy = 0;
-		contentPane.add(lblListaNote, gbc_lblListaNote);
+		GridBagConstraints gbcLblListaNote = new GridBagConstraints();
+		gbcLblListaNote.insets = new Insets(0, 0, 5, 5);
+		gbcLblListaNote.gridx = 0;
+		gbcLblListaNote.gridy = 0;
+		contentPane.add(lblListaNote, gbcLblListaNote);
 
 		JScrollPane scrollPaneList = new JScrollPane();
-		GridBagConstraints gbc_scrollPaneList = new GridBagConstraints();
-		gbc_scrollPaneList.fill = GridBagConstraints.BOTH;
-		gbc_scrollPaneList.gridheight = 4;
-		gbc_scrollPaneList.gridwidth = 2;
-		gbc_scrollPaneList.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPaneList.gridx = 0;
-		gbc_scrollPaneList.gridy = 1;
-		contentPane.add(scrollPaneList, gbc_scrollPaneList);
+		GridBagConstraints gbcScrollPaneList = new GridBagConstraints();
+		gbcScrollPaneList.fill = GridBagConstraints.BOTH;
+		gbcScrollPaneList.gridheight = 4;
+		gbcScrollPaneList.gridwidth = 2;
+		gbcScrollPaneList.insets = new Insets(0, 0, 5, 5);
+		gbcScrollPaneList.gridx = 0;
+		gbcScrollPaneList.gridy = 1;
+		contentPane.add(scrollPaneList, gbcScrollPaneList);
 
-		listNotesModel = new DefaultListModel<Note>();
-		listNotes = new JList<Note>(listNotesModel);
+		listNotesModel = new DefaultListModel<>();
+		listNotes = new JList<>(listNotesModel);
 		listNotes.addListSelectionListener(e -> {
 			btnDelete.setEnabled(listNotes.getSelectedIndex() != -1);
 			btnModify.setEnabled(listNotes.getSelectedIndex() != -1);
@@ -138,37 +127,37 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		listNotes.setName("noteList");
 
 		JLabel lblData = new JLabel("Date (yyyy/mm/dd)");
-		GridBagConstraints gbc_lblData = new GridBagConstraints();
-		gbc_lblData.insets = new Insets(0, 0, 5, 5);
-		gbc_lblData.anchor = GridBagConstraints.WEST;
-		gbc_lblData.gridx = 2;
-		gbc_lblData.gridy = 1;
-		contentPane.add(lblData, gbc_lblData);
+		GridBagConstraints gbcLblData = new GridBagConstraints();
+		gbcLblData.insets = new Insets(0, 0, 5, 5);
+		gbcLblData.anchor = GridBagConstraints.WEST;
+		gbcLblData.gridx = 2;
+		gbcLblData.gridy = 1;
+		contentPane.add(lblData, gbcLblData);
 
 		JLabel lblTitolo = new JLabel("Title");
-		GridBagConstraints gbc_lblTitolo = new GridBagConstraints();
-		gbc_lblTitolo.anchor = GridBagConstraints.WEST;
-		gbc_lblTitolo.insets = new Insets(0, 0, 5, 5);
-		gbc_lblTitolo.gridx = 3;
-		gbc_lblTitolo.gridy = 1;
-		contentPane.add(lblTitolo, gbc_lblTitolo);
+		GridBagConstraints gbcLblTitolo = new GridBagConstraints();
+		gbcLblTitolo.anchor = GridBagConstraints.WEST;
+		gbcLblTitolo.insets = new Insets(0, 0, 5, 5);
+		gbcLblTitolo.gridx = 3;
+		gbcLblTitolo.gridy = 1;
+		contentPane.add(lblTitolo, gbcLblTitolo);
 
 		JLabel lblNota = new JLabel("Note");
-		GridBagConstraints gbc_lblNota = new GridBagConstraints();
-		gbc_lblNota.anchor = GridBagConstraints.WEST;
-		gbc_lblNota.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNota.gridx = 2;
-		gbc_lblNota.gridy = 3;
-		contentPane.add(lblNota, gbc_lblNota);
+		GridBagConstraints gbcLblNota = new GridBagConstraints();
+		gbcLblNota.anchor = GridBagConstraints.WEST;
+		gbcLblNota.insets = new Insets(0, 0, 5, 5);
+		gbcLblNota.gridx = 2;
+		gbcLblNota.gridy = 3;
+		contentPane.add(lblNota, gbcLblNota);
 
 		JScrollPane scrollPaneNote = new JScrollPane();
-		GridBagConstraints gbc_scrollPaneNote = new GridBagConstraints();
-		gbc_scrollPaneNote.fill = GridBagConstraints.BOTH;
-		gbc_scrollPaneNote.gridwidth = 4;
-		gbc_scrollPaneNote.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPaneNote.gridx = 2;
-		gbc_scrollPaneNote.gridy = 4;
-		contentPane.add(scrollPaneNote, gbc_scrollPaneNote);
+		GridBagConstraints gbcScrollPaneNote = new GridBagConstraints();
+		gbcScrollPaneNote.fill = GridBagConstraints.BOTH;
+		gbcScrollPaneNote.gridwidth = 4;
+		gbcScrollPaneNote.insets = new Insets(0, 0, 5, 5);
+		gbcScrollPaneNote.gridx = 2;
+		gbcScrollPaneNote.gridy = 4;
+		contentPane.add(scrollPaneNote, gbcScrollPaneNote);
 
 		textBody = new JTextArea();
 		scrollPaneNote.setViewportView(textBody);
@@ -183,11 +172,11 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 			listNotes.clearSelection();
 		});
 		btnNew.setEnabled(false);
-		GridBagConstraints gbc_btnNew = new GridBagConstraints();
-		gbc_btnNew.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNew.gridx = 1;
-		gbc_btnNew.gridy = 5;
-		contentPane.add(btnNew, gbc_btnNew);
+		GridBagConstraints gbcBtnNew = new GridBagConstraints();
+		gbcBtnNew.insets = new Insets(0, 0, 5, 5);
+		gbcBtnNew.gridx = 1;
+		gbcBtnNew.gridy = 5;
+		contentPane.add(btnNew, gbcBtnNew);
 
 		btnModify = new JButton("Modify");
 		btnModify.addActionListener(
@@ -196,46 +185,46 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 						new Note(textDate.getText(), textTitle.getText(), textBody.getText()))
 		);
 		btnModify.setEnabled(false);
-		GridBagConstraints gbc_btnModify = new GridBagConstraints();
-		gbc_btnModify.anchor = GridBagConstraints.EAST;
-		gbc_btnModify.insets = new Insets(0, 0, 5, 5);
-		gbc_btnModify.gridx = 3;
-		gbc_btnModify.gridy = 5;
-		contentPane.add(btnModify, gbc_btnModify);
+		GridBagConstraints gbcBtnModify = new GridBagConstraints();
+		gbcBtnModify.anchor = GridBagConstraints.EAST;
+		gbcBtnModify.insets = new Insets(0, 0, 5, 5);
+		gbcBtnModify.gridx = 3;
+		gbcBtnModify.gridy = 5;
+		contentPane.add(btnModify, gbcBtnModify);
 
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(
 			e -> notebookController.deleteNote(listNotes.getSelectedValue())
 		);
 		btnDelete.setEnabled(false);
-		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
-		gbc_btnDelete.anchor = GridBagConstraints.EAST;
-		gbc_btnDelete.insets = new Insets(0, 0, 5, 5);
-		gbc_btnDelete.gridx = 4;
-		gbc_btnDelete.gridy = 5;
-		contentPane.add(btnDelete, gbc_btnDelete);
+		GridBagConstraints gbcBtnDelete = new GridBagConstraints();
+		gbcBtnDelete.anchor = GridBagConstraints.EAST;
+		gbcBtnDelete.insets = new Insets(0, 0, 5, 5);
+		gbcBtnDelete.gridx = 4;
+		gbcBtnDelete.gridy = 5;
+		contentPane.add(btnDelete, gbcBtnDelete);
 
 		btnAdd = new JButton("Add");
 		btnAdd.addActionListener(
 			e -> notebookController.addNote(new Note(textDate.getText(), textTitle.getText(), textBody.getText()))
 		);
 		btnAdd.setEnabled(false);
-		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
-		gbc_btnAdd.anchor = GridBagConstraints.EAST;
-		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
-		gbc_btnAdd.gridx = 5;
-		gbc_btnAdd.gridy = 5;
-		contentPane.add(btnAdd, gbc_btnAdd);
+		GridBagConstraints gbcBtnAdd = new GridBagConstraints();
+		gbcBtnAdd.anchor = GridBagConstraints.EAST;
+		gbcBtnAdd.insets = new Insets(0, 0, 5, 0);
+		gbcBtnAdd.gridx = 5;
+		gbcBtnAdd.gridy = 5;
+		contentPane.add(btnAdd, gbcBtnAdd);
 
 		lblError = new JLabel(" ");
 		getLblError().setForeground(new Color(224, 27, 36));
 		getLblError().setName("errorMessageLabel");
-		GridBagConstraints gbc_lblError = new GridBagConstraints();
-		gbc_lblError.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblError.gridwidth = 6;
-		gbc_lblError.gridx = 0;
-		gbc_lblError.gridy = 6;
-		contentPane.add(getLblError(), gbc_lblError);
+		GridBagConstraints gbcLblError = new GridBagConstraints();
+		gbcLblError.fill = GridBagConstraints.HORIZONTAL;
+		gbcLblError.gridwidth = 6;
+		gbcLblError.gridx = 0;
+		gbcLblError.gridy = 6;
+		contentPane.add(getLblError(), gbcLblError);
 
 		textDate = new JTextField();
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
@@ -246,24 +235,24 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		};
 		textDate.addKeyListener(btnAddEnabler);
 		textDate.setName("date");
-		GridBagConstraints gbc_textFieldDate = new GridBagConstraints();
-		gbc_textFieldDate.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldDate.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldDate.gridx = 2;
-		gbc_textFieldDate.gridy = 2;
-		contentPane.add(textDate, gbc_textFieldDate);
+		GridBagConstraints gbcTextFieldDate = new GridBagConstraints();
+		gbcTextFieldDate.fill = GridBagConstraints.HORIZONTAL;
+		gbcTextFieldDate.insets = new Insets(0, 0, 5, 5);
+		gbcTextFieldDate.gridx = 2;
+		gbcTextFieldDate.gridy = 2;
+		contentPane.add(textDate, gbcTextFieldDate);
 		textDate.setColumns(10);
 
 		textTitle = new JTextField();
 		textTitle.addKeyListener(btnAddEnabler);
 		textTitle.setName("title");
-		GridBagConstraints gbc_textFieldTitle = new GridBagConstraints();
-		gbc_textFieldTitle.gridwidth = 3;
-		gbc_textFieldTitle.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldTitle.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldTitle.gridx = 3;
-		gbc_textFieldTitle.gridy = 2;
-		contentPane.add(textTitle, gbc_textFieldTitle);
+		GridBagConstraints gbcTextFieldTitle = new GridBagConstraints();
+		gbcTextFieldTitle.gridwidth = 3;
+		gbcTextFieldTitle.fill = GridBagConstraints.HORIZONTAL;
+		gbcTextFieldTitle.insets = new Insets(0, 0, 5, 0);
+		gbcTextFieldTitle.gridx = 3;
+		gbcTextFieldTitle.gridy = 2;
+		contentPane.add(textTitle, gbcTextFieldTitle);
 		textTitle.setColumns(10);
 	}
 
@@ -274,10 +263,8 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 
 	@Override
 	public void noteAdded(Note noteAdded) {
-		//if (checkNoteValidity(noteAdded)) {
 		listNotesModel.addElement(noteAdded);
 		resetErrorlabel();
-		//}
 	}
 
 	@Override
