@@ -52,7 +52,7 @@ public class Note {
 
 	@Override
 	public String toString() {
-		return "Note [id=" + id + "]";
+		return id;
 	}
 	
 }
