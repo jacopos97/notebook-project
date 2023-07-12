@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.examples.notebook.model.Note;
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 
 public class NotesMongoRepositoryIT {
@@ -21,10 +22,12 @@ public class NotesMongoRepositoryIT {
 	private MongoClient client;
 	private NotesMongoRepository notesMongoRepository;
 	private MongoCollection<Document> notesCollection;
+
+	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 	
 	@Before
 	public void setUp() {
-		client = new MongoClient("localhost");
+		client = new MongoClient(new ServerAddress("localhost", mongoPort));
 		notesMongoRepository = new NotesMongoRepository(client);
 		var database = client.getDatabase(NOTEBOOK_DB_NAME);
 		database.drop();

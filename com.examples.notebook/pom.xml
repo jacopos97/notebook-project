@@ -186,7 +186,7 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>27017:27017</port>
+									<port>mongo.mapped.port:27017</port>
 								</ports>
 							</run>
 						</image>
