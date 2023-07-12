@@ -148,7 +148,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabel() {
+	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabelAndSelectTheNoteAdded() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		GuiActionRunner.execute(() -> {
 			var errorLabel = notebookSwingView.getLblError();
@@ -158,6 +158,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		String[] listContents = window.list().contents();
 		assertThat(listContents).containsExactly(note.toString());
 		window.label("errorMessageLabel").requireText(" ");
+		window.list("noteList").requireSelectedItems(note.toString());
 	}
 
 	@Test

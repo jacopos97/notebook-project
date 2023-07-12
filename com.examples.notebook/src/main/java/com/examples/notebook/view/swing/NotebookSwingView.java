@@ -266,6 +266,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	@Override
 	public void noteAdded(Note noteAdded) {
 		listNotesModel.addElement(noteAdded);
+		listNotes.setSelectedValue(noteAdded, false);
 		resetErrorlabel();
 	}
 
