@@ -27,13 +27,17 @@ public class NotebookControllerIT {
 	private AutoCloseable closeable;
 	
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
+	private static final String NOTEBOOK_DB_NAME = "notebook";
+	private static final String NOTE_COLLECTION_NAME = "note";
 
 	@Before
 	public void setUp() {
 		closeable = MockitoAnnotations.openMocks(this);
 		notesRepository = new NotesMongoRepository(
 				new MongoClient(
-						new ServerAddress("localhost", mongoPort)));
+						new ServerAddress("localhost", mongoPort)),
+						NOTEBOOK_DB_NAME,
+						NOTE_COLLECTION_NAME);
 		for (var note : notesRepository.findAll()) {
 			notesRepository.delete(note.getId());
 		}

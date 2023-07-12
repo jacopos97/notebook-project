@@ -1,7 +1,5 @@
 package com.examples.notebook.repository.mongo;
 
-import static com.examples.notebook.repository.mongo.NotesMongoRepository.NOTEBOOK_DB_NAME;
-import static com.examples.notebook.repository.mongo.NotesMongoRepository.NOTE_COLLECTION_NAME;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -24,11 +22,13 @@ public class NotesMongoRepositoryIT {
 	private MongoCollection<Document> notesCollection;
 
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
+	private static final String NOTEBOOK_DB_NAME = "notebook";
+	private static final String NOTE_COLLECTION_NAME = "note";
 	
 	@Before
 	public void setUp() {
 		client = new MongoClient(new ServerAddress("localhost", mongoPort));
-		notesMongoRepository = new NotesMongoRepository(client);
+		notesMongoRepository = new NotesMongoRepository(client, NOTEBOOK_DB_NAME, NOTE_COLLECTION_NAME);
 		var database = client.getDatabase(NOTEBOOK_DB_NAME);
 		database.drop();
 		notesCollection = database.getCollection(NOTE_COLLECTION_NAME);

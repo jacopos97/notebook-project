@@ -12,14 +12,12 @@ import com.examples.notebook.repository.NotesRepository;
 
 public class NotesMongoRepository implements NotesRepository {
 
-	public static final String NOTEBOOK_DB_NAME = "notebook";
-	public static final String NOTE_COLLECTION_NAME = "note";
 	private MongoCollection<Document> noteCollection;
 
-	public NotesMongoRepository(MongoClient client) {
+	public NotesMongoRepository(MongoClient client, String databaseName, String collectionName) {
 		noteCollection = client
-				.getDatabase(NOTEBOOK_DB_NAME)
-				.getCollection(NOTE_COLLECTION_NAME);
+				.getDatabase(databaseName)
+				.getCollection(collectionName);
 	}
 
 	@Override

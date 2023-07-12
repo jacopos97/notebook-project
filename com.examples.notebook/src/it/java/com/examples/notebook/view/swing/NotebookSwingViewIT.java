@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
-import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
@@ -30,11 +29,13 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 	private NotebookController notebookController;
 
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
+	private static final String NOTEBOOK_DB_NAME = "notebook";
+	private static final String NOTE_COLLECTION_NAME = "note";
 
 	@Override
 	protected void onSetUp() throws Exception {
 		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
-		notesRepository = new NotesMongoRepository(mongoClient);
+		notesRepository = new NotesMongoRepository(mongoClient, NOTEBOOK_DB_NAME, NOTE_COLLECTION_NAME);
 		for (var note : notesRepository.findAll()) {
 			notesRepository.delete(note.getId());
 		}
