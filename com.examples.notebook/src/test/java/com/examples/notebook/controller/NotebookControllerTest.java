@@ -107,7 +107,7 @@ public class NotebookControllerTest {
 	}
 	
 	@Test
-	public void testModifyNoteWhenNoteDoesNotChangeId() {
+	public void testModifyNoteWhenNoteChangesIdInANotExistentId() {
 		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
 		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
 		when(notesRepository.findById("2000/01/01" + "-" + "OldTitle"))
@@ -120,6 +120,21 @@ public class NotebookControllerTest {
 	}
 	
 	@Test
+	public void testModifyNoteWhenModifiedNoteChangesIdInAnExistentId() {
+		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
+		var noteInRepository = new Note("2002/02/02", "NewTitle", "Body");
+		when(notesRepository.findById("2000/01/01-OldTitle")).
+		thenReturn(noteToModify);
+		when(notesRepository.findById("2002/02/02" + "-" + "NewTitle"))
+		.thenReturn(noteInRepository);
+		notebookController.modifyNote(noteToModify.getId(), noteModified);
+		verify(notebookView).
+		showError("Change date and/or title. Already exist a note with the same attributes.");
+		verifyNoMoreInteractions(ignoreStubs(notesRepository));
+	}
+	
+	@Test
 	public void testModifyNoteWhenNoteDoesNotExist() {
 		var idNoteToModify = "2000/01/01-OldTitle";
 		var noteModified = new Note("2002/02/0872", "NewTitle", "NewBody");
@@ -128,21 +143,6 @@ public class NotebookControllerTest {
 		notebookController.modifyNote(idNoteToModify, noteModified);
 		verify(notebookView).
 		showError("No existing note with id " + idNoteToModify);
-		verifyNoMoreInteractions(ignoreStubs(notesRepository));
-	}
-	
-	@Test
-	public void testModifyNoteWhenModifiedNoteChangeItsIdInAnExistentId() {
-		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
-		var noteInRepository = new Note("2002/02/02", "NewTitle", "Body");
-		when(notesRepository.findById("2000/01/01-OldTitle")).
-			thenReturn(noteToModify);
-		when(notesRepository.findById("2002/02/02" + "-" + "NewTitle"))
-			.thenReturn(noteInRepository);
-		notebookController.modifyNote(noteToModify.getId(), noteModified);
-		verify(notebookView).
-			showError("Change date and/or title. Already exist a note with the same attributes.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 	
