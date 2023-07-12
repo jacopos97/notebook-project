@@ -148,7 +148,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabel() {
+	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabelAndSelectTheNoteAdded() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		GuiActionRunner.execute(() -> {
 			var errorLabel = notebookSwingView.getLblError();
@@ -158,6 +158,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		String[] listContents = window.list().contents();
 		assertThat(listContents).containsExactly(note.toString());
 		window.label("errorMessageLabel").requireText(" ");
+		window.list("noteList").requireSelectedItems(note.toString());
 	}
 
 	@Test
@@ -226,17 +227,9 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000/01/01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
-		var date = window.textBox("date");
-		var title = window.textBox("title");
-		var body = window.textBox("body");
-		
-		date.deleteText();
-		date.enterText("2000/01/02");
-		title.deleteText();
-		title.enterText("NewTitle");
-		body.deleteText();
-		body.enterText("NewBody");
-		
+		window.textBox("date").deleteText().enterText("2000/01/02");
+		window.textBox("title").deleteText().enterText("NewTitle");
+		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		verify(notebookController).modifyNote("2000/01/01-Title", new Note("2000/01/02", "NewTitle", "NewBody"));
 	}
