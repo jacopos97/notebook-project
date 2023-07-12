@@ -30,6 +30,7 @@
 		</sonar.issue.ignore.multicriteria.e11.resourceKey>
 
 		<sonar.coverage.exclusions>
+			**/app/*.*,
 			**/model/*.*
 		</sonar.coverage.exclusions>
 	</properties>
@@ -91,6 +92,7 @@
 					<configuration>
 						<excludes>
 							<exclude>**/Note.*</exclude>
+							<exclude>**/app/*.*</exclude>
 						</excludes>
 					</configuration>
 					<executions>
