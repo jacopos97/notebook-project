@@ -19,6 +19,7 @@
 		<mongo-driver.version>3.12.14</mongo-driver.version>
 		<logback.version>1.4.8</logback.version>
 		<commons-validator.version>1.7</commons-validator.version>
+		<log4j.version>2.20.0</log4j.version>
 
 		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
 
@@ -68,6 +69,16 @@
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 			<version>${commons-validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -125,7 +136,8 @@
 							<param>com.examples.notebook.controller.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>com.examples.notebook.controller.NotebookControllerTest</param>
+							<param>
+								com.examples.notebook.controller.NotebookControllerTest</param>
 						</targetTests>
 						<mutators>
 							<mutator>DEFAULTS</mutator>

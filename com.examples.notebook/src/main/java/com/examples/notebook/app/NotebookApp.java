@@ -2,6 +2,9 @@ package com.examples.notebook.app;
 
 import java.awt.EventQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.examples.notebook.controller.NotebookController;
 import com.examples.notebook.repository.mongo.NotesMongoRepository;
 import com.examples.notebook.view.swing.NotebookSwingView;
@@ -9,6 +12,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 public class NotebookApp {
+	
+	private static final Logger LOGGER = LogManager.getLogger(NotebookApp.class);
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
@@ -27,7 +32,7 @@ public class NotebookApp {
 				notebookView.setVisible(true);
 				notebookController.getAllNotes();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error("Exception", e);
 			}
 		});
 	}
