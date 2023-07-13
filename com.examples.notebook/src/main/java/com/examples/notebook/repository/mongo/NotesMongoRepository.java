@@ -43,7 +43,7 @@ public class NotesMongoRepository implements NotesRepository {
 					.append("date", noteToAdd.getDate())
 					.append("title", noteToAdd.getTitle())
 					.append("body", noteToAdd.getBody())
-					.append("id", noteToAdd.getDate() + "-" + noteToAdd.getTitle()));
+					.append("id", noteToAdd.getId()));
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class NotesMongoRepository implements NotesRepository {
 					.append("date", noteModified.getDate())
 					.append("title", noteModified.getTitle())
 					.append("body", noteModified.getBody())
-					.append("id", noteModified.getDate() + "-" + noteModified.getTitle()));
+					.append("id", noteModified.getId()));
 	}
 	
 	private Note fromDocumentToNote(Document d) {
