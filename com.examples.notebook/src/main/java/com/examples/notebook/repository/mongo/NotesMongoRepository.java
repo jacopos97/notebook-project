@@ -12,14 +12,12 @@ import com.examples.notebook.repository.NotesRepository;
 
 public class NotesMongoRepository implements NotesRepository {
 
-	public static final String NOTEBOOK_DB_NAME = "notebook";
-	public static final String NOTE_COLLECTION_NAME = "note";
 	private MongoCollection<Document> noteCollection;
 
-	public NotesMongoRepository(MongoClient client) {
+	public NotesMongoRepository(MongoClient client, String databaseName, String collectionName) {
 		noteCollection = client
-				.getDatabase(NOTEBOOK_DB_NAME)
-				.getCollection(NOTE_COLLECTION_NAME);
+				.getDatabase(databaseName)
+				.getCollection(collectionName);
 	}
 
 	@Override
@@ -45,7 +43,7 @@ public class NotesMongoRepository implements NotesRepository {
 					.append("date", noteToAdd.getDate())
 					.append("title", noteToAdd.getTitle())
 					.append("body", noteToAdd.getBody())
-					.append("id", noteToAdd.getDate() + "-" + noteToAdd.getTitle()));
+					.append("id", noteToAdd.getId()));
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class NotesMongoRepository implements NotesRepository {
 					.append("date", noteModified.getDate())
 					.append("title", noteModified.getTitle())
 					.append("body", noteModified.getBody())
-					.append("id", noteModified.getDate() + "-" + noteModified.getTitle()));
+					.append("id", noteModified.getId()));
 	}
 	
 	private Note fromDocumentToNote(Document d) {

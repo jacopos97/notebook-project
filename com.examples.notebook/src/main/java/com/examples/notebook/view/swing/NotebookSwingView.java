@@ -46,19 +46,6 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	
 	private transient NotebookController notebookController;
 
-	/*public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					NotebookSwingView frame = new NotebookSwingView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
-
 	DefaultListModel<Note> getListNotesModel() {
 		return listNotesModel;
 	}
@@ -111,12 +98,12 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		listNotes = new JList<>(listNotesModel);
 		listNotes.addListSelectionListener(e -> {
 			btnDelete.setEnabled(listNotes.getSelectedIndex() != -1);
-			btnModify.setEnabled(listNotes.getSelectedIndex() != -1);
 			btnNew.setEnabled(listNotes.getSelectedIndex() != -1);
 			if (listNotes.getSelectedIndex() != -1) {
 				textDate.setText(listNotes.getSelectedValue().getDate());
 				textTitle.setText(listNotes.getSelectedValue().getTitle());
 				textBody.setText(listNotes.getSelectedValue().getBody());
+				lblError.setText(" ");
 			} else {
 				textDate.setText("");
 				textTitle.setText("");
@@ -181,11 +168,12 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		contentPane.add(btnNew, gbcBtnNew);
 
 		btnModify = new JButton("Modify");
-		btnModify.addActionListener(
-				e -> notebookController.modifyNote(
-						listNotes.getSelectedValue().getId(),
-						new Note(textDate.getText(), textTitle.getText(), textBody.getText()))
-		);
+		btnModify.addActionListener(e -> {
+			notebookController.modifyNote(
+				listNotes.getSelectedValue().getId(),
+				new Note(textDate.getText(), textTitle.getText(), textBody.getText()));
+			btnModify.setEnabled(false);
+		});
 		btnModify.setEnabled(false);
 		GridBagConstraints gbcBtnModify = new GridBagConstraints();
 		gbcBtnModify.anchor = GridBagConstraints.EAST;
@@ -207,9 +195,13 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		contentPane.add(btnDelete, gbcBtnDelete);
 
 		btnAdd = new JButton("Add");
-		btnAdd.addActionListener(
-			e -> notebookController.addNote(new Note(textDate.getText(), textTitle.getText(), textBody.getText()))
-		);
+		btnAdd.addActionListener(e -> {
+			notebookController.addNote(new Note(textDate.getText(), textTitle.getText(), textBody.getText()));
+			btnAdd.setEnabled(false);
+			textDate.setText("");
+			textTitle.setText("");
+			textBody.setText("");
+		});
 		btnAdd.setEnabled(false);
 		GridBagConstraints gbcBtnAdd = new GridBagConstraints();
 		gbcBtnAdd.anchor = GridBagConstraints.EAST;
@@ -233,6 +225,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				btnAdd.setEnabled(!textDate.getText().trim().isEmpty() && !textTitle.getText().trim().isEmpty() && listNotes.isSelectionEmpty());
+				btnModify.setEnabled(!textDate.getText().trim().isEmpty() && !textTitle.getText().trim().isEmpty() && !listNotes.isSelectionEmpty());
 			}
 		};
 		textDate.addKeyListener(btnAddEnabler);
@@ -266,7 +259,6 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	@Override
 	public void noteAdded(Note noteAdded) {
 		listNotesModel.addElement(noteAdded);
-		listNotes.setSelectedValue(noteAdded, false);
 		resetErrorlabel();
 	}
 
