@@ -23,6 +23,19 @@
 		<picocli.version>4.7.3</picocli.version>
 
 		<surefire.version>3.1.2</surefire.version>
+		<clean-plugin.version>3.3.1</clean-plugin.version>
+		<resources-plugin.version>3.3.1</resources-plugin.version>
+		<compiler-plugin.version>3.11.0</compiler-plugin.version>
+		<jar-plugin.version>3.3.0</jar-plugin.version>
+		<site-plugin.version>4.0.0-M9</site-plugin.version>
+		<jacoco.version>0.8.10</jacoco.version>
+		<coveralls.version>4.3.0</coveralls.version>
+		<jaxb-api.version>2.3.1</jaxb-api.version>
+		<pitest.version>1.14.1</pitest.version>
+		<sonar.version>3.9.1.2184</sonar.version>
+		<build-helper.version>3.4.0</build-helper.version>
+		<failsafe.version>3.1.2</failsafe.version>
+		<docker-plugin.version>0.43.0</docker-plugin.version>
 
 		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
 
@@ -95,19 +108,19 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.3.1</version>
+					<version>${clean-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.3.1</version>
+					<version>${resources-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.11.0</version>
+					<version>${compiler-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>${jar-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
@@ -122,12 +135,12 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>4.0.0-M9</version>
+					<version>${site-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.10</version>
+					<version>${jacoco.version}</version>
 					<configuration>
 						<excludes>
 							<exclude>**/Note.*</exclude>
@@ -146,19 +159,19 @@
 				<plugin>
 					<groupId>org.eluder.coveralls</groupId>
 					<artifactId>coveralls-maven-plugin</artifactId>
-					<version>4.3.0</version>
+					<version>${coveralls.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>javax.xml.bind</groupId>
 							<artifactId>jaxb-api</artifactId>
-							<version>2.3.1</version>
+							<version>${jaxb-api.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.pitest</groupId>
 					<artifactId>pitest-maven</artifactId>
-					<version>1.14.1</version>
+					<version>${pitest.version}</version>
 					<configuration>
 						<targetClasses>
 							<param>com.examples.notebook.controller.*</param>
@@ -176,7 +189,7 @@
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.9.1.2184</version>
+					<version>${sonar.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -184,7 +197,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>${build-helper.version}</version>
 				<executions>
 					<execution>
 						<id>add-test-source</id>
@@ -204,7 +217,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>${failsafe.version}</version>
 				<configuration>
 					<systemPropertyVariables>
 						<mongo.port>${mongo.mapped.port}</mongo.port>
@@ -239,7 +252,7 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.43.0</version>
+				<version>${docker-plugin.version}</version>
 				<configuration>
 					<images>
 						<image>
