@@ -40,12 +40,12 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	private MongoClient mongoClient;
 	private FrameFixture window;
 
-	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 	private static final String NOTEBOOK_DB_NAME = "notebook";
 	private static final String NOTE_COLLECTION_NAME = "note";
 
 	@Override
 	protected void onSetUp() {
+		var mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 		var serverAddress = new ServerAddress("localhost", mongoPort);
 		mongoClient = new MongoClient(serverAddress);
 		mongoClient.getDatabase(NOTEBOOK_DB_NAME).drop();
@@ -53,8 +53,6 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 		addTestNoteToDatabase(NOTE_FIXTURE_2_DATE, NOTE_FIXTURE_2_TITLE, NOTE_FIXTURE_2_BODY);
 		application("com.examples.notebook.app.NotebookApp")
 			.withArgs(
-				"--mongo-host=" + serverAddress,
-				"--mongo-port=" + mongoPort,
 				"--db-name=" + NOTEBOOK_DB_NAME,
 				"--db-collection=" + NOTE_COLLECTION_NAME)
 			.start();

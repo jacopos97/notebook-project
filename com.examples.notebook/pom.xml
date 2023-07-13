@@ -219,7 +219,7 @@
 							<goal>verify</goal>
 						</goals>
 					</execution>
-					<!-- <execution>
+					<execution>
 						<id>e2e-tests</id>
 						<goals>
 							<goal>integration-test</goal>
@@ -233,7 +233,7 @@
 								<include>**/*E2E.java</include>
 							</includes>
 						</configuration>
-					</execution>  -->
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
