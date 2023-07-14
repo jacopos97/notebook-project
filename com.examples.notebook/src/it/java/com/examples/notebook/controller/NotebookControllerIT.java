@@ -20,12 +20,12 @@ public class NotebookControllerIT {
 
 	@Mock
 	private NotebookView notebookView;
-	
+
 	private NotesRepository notesRepository;
 	private NotebookController notebookController;
-	
+
 	private AutoCloseable closeable;
-	
+
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 	private static final String NOTEBOOK_DB_NAME = "notebook";
 	private static final String NOTE_COLLECTION_NAME = "note";
@@ -43,28 +43,28 @@ public class NotebookControllerIT {
 		}
 		notebookController = new NotebookController(notesRepository, notebookView);
 	}
-	
+
 	@After
 	public void releaseMocks() throws Exception {
 		closeable.close();
 	}
-	
+
 	@Test
 	public void testGetAllNotes() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		notesRepository.save(note);
 		notebookController.getAllNotes();
-		verify(notebookView).
-			showAllNotes(asList(note));
+		verify(notebookView)
+				.showAllNotes(asList(note));
 	}
-	
+
 	@Test
 	public void testAddNote() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		notebookController.addNote(note);
 		verify(notebookView).noteAdded(note);
 	}
-	
+
 	@Test
 	public void testDeleteNote() {
 		var noteToDelete = new Note("2000/01/01", "Title", "Body");
@@ -72,7 +72,7 @@ public class NotebookControllerIT {
 		notebookController.deleteNote(noteToDelete);
 		verify(notebookView).noteRemoved(noteToDelete);
 	}
-	
+
 	@Test
 	public void testModifyNote() {
 		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");

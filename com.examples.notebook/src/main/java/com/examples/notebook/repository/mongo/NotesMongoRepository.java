@@ -34,7 +34,7 @@ public class NotesMongoRepository implements NotesRepository {
 
 	@Override
 	public Note findById(String id) {
-		Document d = noteCollection.find(Filters.eq(ID, id)).first();
+		var d = noteCollection.find(Filters.eq(ID, id)).first();
 		if (d != null)
 			return fromDocumentToNote(d);
 		return null;
@@ -44,15 +44,16 @@ public class NotesMongoRepository implements NotesRepository {
 	public void save(Note noteToAdd) {
 		noteCollection.insertOne(
 				new Document()
-					.append(DATE, noteToAdd.getDate())
-					.append(TITLE, noteToAdd.getTitle())
-					.append(BODY, noteToAdd.getBody())
-					.append(ID, noteToAdd.getId()));
+						.append(DATE, noteToAdd.getDate())
+						.append(TITLE, noteToAdd.getTitle())
+						.append(BODY, noteToAdd.getBody())
+						.append(ID, noteToAdd.getId()));
 	}
 
 	@Override
 	public void delete(String idNoteToDelete) {
-		noteCollection.deleteOne(Filters.eq(ID, idNoteToDelete));
+		noteCollection.deleteOne(
+				Filters.eq(ID, idNoteToDelete));
 	}
 
 	@Override
@@ -60,10 +61,10 @@ public class NotesMongoRepository implements NotesRepository {
 		noteCollection.replaceOne(
 				Filters.eq(ID, idNoteToModify),
 				new Document()
-					.append(DATE, noteModified.getDate())
-					.append(TITLE, noteModified.getTitle())
-					.append(BODY, noteModified.getBody())
-					.append(ID, noteModified.getId()));
+						.append(DATE, noteModified.getDate())
+						.append(TITLE, noteModified.getTitle())
+						.append(BODY, noteModified.getBody())
+						.append(ID, noteModified.getId()));
 	}
 	
 	private Note fromDocumentToNote(Document d) {
