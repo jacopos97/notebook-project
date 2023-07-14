@@ -21,6 +21,7 @@
 		<commons-validator.version>1.7</commons-validator.version>
 		<log4j.version>2.20.0</log4j.version>
 		<picocli.version>4.7.3</picocli.version>
+		<mysql-connector.version>8.0.33</mysql-connector.version>
 
 		<surefire.version>3.1.2</surefire.version>
 		<clean-plugin.version>3.3.1</clean-plugin.version>
@@ -100,6 +101,11 @@
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
 			<version>${picocli.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>${mysql-connector.version}</version>
 		</dependency>
 	</dependencies>
 
