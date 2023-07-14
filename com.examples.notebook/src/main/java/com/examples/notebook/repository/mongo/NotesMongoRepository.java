@@ -12,6 +12,10 @@ import com.examples.notebook.repository.NotesRepository;
 
 public class NotesMongoRepository implements NotesRepository {
 
+	private static final String DATE = "date";
+	private static final String TITLE = "title";
+	private static final String BODY = "body";
+	private static final String ID = "id";
 	private MongoCollection<Document> noteCollection;
 
 	public NotesMongoRepository(MongoClient client, String databaseName, String collectionName) {
@@ -30,7 +34,7 @@ public class NotesMongoRepository implements NotesRepository {
 
 	@Override
 	public Note findById(String id) {
-		Document d = noteCollection.find(Filters.eq("id", id)).first();
+		Document d = noteCollection.find(Filters.eq(ID, id)).first();
 		if (d != null)
 			return fromDocumentToNote(d);
 		return null;
@@ -40,30 +44,30 @@ public class NotesMongoRepository implements NotesRepository {
 	public void save(Note noteToAdd) {
 		noteCollection.insertOne(
 				new Document()
-					.append("date", noteToAdd.getDate())
-					.append("title", noteToAdd.getTitle())
-					.append("body", noteToAdd.getBody())
-					.append("id", noteToAdd.getId()));
+					.append(DATE, noteToAdd.getDate())
+					.append(TITLE, noteToAdd.getTitle())
+					.append(BODY, noteToAdd.getBody())
+					.append(ID, noteToAdd.getId()));
 	}
 
 	@Override
 	public void delete(String idNoteToDelete) {
-		noteCollection.deleteOne(Filters.eq("id", idNoteToDelete));
+		noteCollection.deleteOne(Filters.eq(ID, idNoteToDelete));
 	}
 
 	@Override
 	public void modify(String idNoteToModify, Note noteModified) {
 		noteCollection.replaceOne(
-				Filters.eq("id", idNoteToModify),
+				Filters.eq(ID, idNoteToModify),
 				new Document()
-					.append("date", noteModified.getDate())
-					.append("title", noteModified.getTitle())
-					.append("body", noteModified.getBody())
-					.append("id", noteModified.getId()));
+					.append(DATE, noteModified.getDate())
+					.append(TITLE, noteModified.getTitle())
+					.append(BODY, noteModified.getBody())
+					.append(ID, noteModified.getId()));
 	}
 	
 	private Note fromDocumentToNote(Document d) {
-		return new Note(""+d.get("date"), ""+d.get("title"), ""+d.get("body"));
+		return new Note(""+d.get(DATE), ""+d.get(TITLE), ""+d.get(BODY));
 	}
 
 }
