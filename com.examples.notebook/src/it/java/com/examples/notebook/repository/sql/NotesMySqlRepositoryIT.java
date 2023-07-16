@@ -1,27 +1,20 @@
 package com.examples.notebook.repository.sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.examples.notebook.model.Note;
-import com.examples.notebook.repository.mongo.NotesMongoRepository;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
 
 public class NotesMySqlRepositoryIT {
 	

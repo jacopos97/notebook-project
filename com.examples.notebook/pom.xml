@@ -21,7 +21,7 @@
 		<commons-validator.version>1.7</commons-validator.version>
 		<log4j.version>2.20.0</log4j.version>
 		<picocli.version>4.7.3</picocli.version>
-		<mysql-connector.version>8.0.33</mysql-connector.version>
+		<mysql-connector.version>8.0.26</mysql-connector.version>
 
 		<surefire.version>3.1.2</surefire.version>
 		<clean-plugin.version>3.3.1</clean-plugin.version>
@@ -82,6 +82,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
+		<!--<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>-->
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
@@ -103,8 +108,8 @@
 			<version>${picocli.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connector.version}</version>
 		</dependency>
 	</dependencies>
@@ -226,7 +231,7 @@
 				<version>${failsafe.version}</version>
 				<configuration>
 					<systemPropertyVariables>
-						<mongo.port>${mongo.mapped.port}</mongo.port>
+						<mongo.port>${mongo.port}</mongo.port>
 					</systemPropertyVariables>
 					<argLine>${argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 				</configuration>
@@ -265,8 +270,35 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>mongo.mapped.port:27017</port>
+									<port>mongo.port:27017</port>
 								</ports>
+								<wait>
+									<http>
+										<url>http://localhost:${mongo.port}</url>
+										<method>GET</method>
+										<status>200</status>
+									</http>
+									<time>30000</time>
+								</wait>
+							</run>
+						</image>
+						<image>
+							<name>mysql_database</name>
+							<build>
+								<dockerFileDir>${project.basedir}/src/main/resources/dockerfile</dockerFileDir>
+								<!--<assembly>
+									<descriptorRef>artifact</descriptorRef>
+									<mode>dir</mode>
+								</assembly> -->
+							</build>
+							<run>
+								<ports>
+									<port>3306:3306</port>
+								</ports>
+								<wait>
+									<log>MySQL init process done. Ready for start up.</log>
+									<time>30000</time>
+								</wait>
 							</run>
 						</image>
 					</images>
@@ -276,6 +308,7 @@
 						<id>docker-start</id>
 						<phase>pre-integration-test</phase>
 						<goals>
+							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
