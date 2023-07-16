@@ -1,8 +1,8 @@
 package com.examples.notebook.repository.sql;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,19 +14,19 @@ import com.examples.notebook.repository.NotesRepository;
 
 public class NotesMySqlRepository implements NotesRepository {
 
-	private Connection connection;
+	private Statement statement;
 
 	private static final Logger LOGGER = LogManager.getLogger(NotesMySqlRepository.class);
 
-	public NotesMySqlRepository(Connection connection) {
-		this.connection = connection;
+	public NotesMySqlRepository(Statement statement) {
+		this.statement = statement;
 	}
 
 	@Override
 	public List<Note> findAll() {
 		var noteList = new ArrayList<Note>();
 		try {
-			var tableRow = connection.createStatement().executeQuery("select * from notebook.Notes");
+			var tableRow = statement.executeQuery("select * from notebook.Notes");
 			while (tableRow.next())
 				noteList.add(fromRowElementToNote(tableRow));
 		} catch (SQLException e) {
@@ -39,7 +39,7 @@ public class NotesMySqlRepository implements NotesRepository {
 	public Note findById(String id) {
 		Note note = null;
 		try {
-			var tableRow = connection.createStatement()
+			var tableRow = statement
 					.executeQuery("select * from notebook.Notes where Id='" + id + "'");
 			if (tableRow.next())
 				note = fromRowElementToNote(tableRow);
@@ -51,14 +51,10 @@ public class NotesMySqlRepository implements NotesRepository {
 
 	@Override
 	public void save(Note noteToAdd) {
-		String query = " insert into notebook.Notes values (?, ?, ?, ?)";
+		String query = " insert into notebook.Notes values ('" + noteToAdd.getDate() + 
+				"', '" + noteToAdd.getTitle() +"', '" + noteToAdd.getBody() + "', '" + noteToAdd.getId() + "')";
 		try {
-			var preparedStmt = connection.prepareStatement(query);
-			preparedStmt.setString(1, noteToAdd.getDate());
-			preparedStmt.setString(2, noteToAdd.getTitle());
-			preparedStmt.setString(3, noteToAdd.getBody());
-			preparedStmt.setString(4, noteToAdd.getId());
-			preparedStmt.execute();
+			statement.executeUpdate(query);
 		} catch (SQLException e) {
 			LOGGER.error("SQLException", e);
 		}
@@ -68,7 +64,7 @@ public class NotesMySqlRepository implements NotesRepository {
 	@Override
 	public void delete(String idNoteToDelete) {
 		try {
-			connection.createStatement().executeUpdate("delete from notebook.Notes where Id='" + idNoteToDelete + "'");
+			statement.executeUpdate("delete from notebook.Notes where Id='" + idNoteToDelete + "'");
 		} catch (SQLException e) {
 			LOGGER.error("SQLException", e);
 		}
@@ -78,7 +74,7 @@ public class NotesMySqlRepository implements NotesRepository {
 	@Override
 	public void modify(String idNoteToModify, Note noteModified) {
 		try {
-			connection.createStatement()
+			statement
 					.executeUpdate("update notebook.Notes set " + "NoteDate='" + noteModified.getDate() + "', Title='"
 							+ noteModified.getTitle() + "', Body='" + noteModified.getBody() + "', Id='"
 							+ noteModified.getId() + "' where Id='" + idNoteToModify + "'");

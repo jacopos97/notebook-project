@@ -82,11 +82,6 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
@@ -156,6 +151,7 @@
 						<excludes>
 							<exclude>**/Note.*</exclude>
 							<exclude>**/app/*.*</exclude>
+							<exclude>**/NotesMySqlRepository</exclude>
 						</excludes>
 					</configuration>
 					<executions>
@@ -286,10 +282,6 @@
 							<name>mysql_database</name>
 							<build>
 								<dockerFileDir>${project.basedir}/src/main/resources/dockerfile</dockerFileDir>
-								<!--<assembly>
-									<descriptorRef>artifact</descriptorRef>
-									<mode>dir</mode>
-								</assembly> -->
 							</build>
 							<run>
 								<ports>

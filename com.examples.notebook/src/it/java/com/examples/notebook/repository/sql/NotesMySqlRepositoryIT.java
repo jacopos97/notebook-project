@@ -27,9 +27,9 @@ public class NotesMySqlRepositoryIT {
 	public void setUp(){
 		try {
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/notebook","user","password");
-			notesMySqlRepository = new NotesMySqlRepository(connection);
-			var truncateStatement = connection.createStatement();
-			truncateStatement.executeUpdate("truncate notebook.Notes");
+			var statement = connection.createStatement();
+			notesMySqlRepository = new NotesMySqlRepository(statement);
+			statement.executeUpdate("truncate notebook.Notes");
 		} catch (SQLException e) {
 			LOGGER.error("SQLException", e);
 		}
@@ -59,6 +59,13 @@ public class NotesMySqlRepositoryIT {
 				new Note("2000/01/01", "Title1", "Body1"),
 				new Note("2000/01/02", "Title2", "Body2"));
 	}
+	
+	/*@Test
+	public void testFindAllWheConnectionFailedShouldThrow() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			notesMySqlRepository.findAll();
+		});
+	}*/
 	
 	@Test
 	public void testFindByIdNotFound() {
@@ -110,14 +117,10 @@ public class NotesMySqlRepositoryIT {
 	}
 
 	private void addTestNoteToDatabase(String date, String title, String body) {
-		String query = " insert into notebook.Notes values (?, ?, ?, ?)";
+		String query = " insert into notebook.Notes values ('" + date + 
+				"', '" + title +"', '" + body + "', '" + date + "-" + title + "')";
 		try {
-			var preparedStmt = connection.prepareStatement(query);
-			preparedStmt.setString(1, date);
-			preparedStmt.setString(2, title);
-			preparedStmt.setString(3, body);
-			preparedStmt.setString(4, date + "-" + title);
-			preparedStmt.execute();
+			connection.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
 			LOGGER.error("SQLException", e);
 		}
