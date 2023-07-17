@@ -50,6 +50,7 @@
 		<sonar.coverage.exclusions>
 			**/app/*.*,
 			**/model/*.*
+			**/sql/*.*
 		</sonar.coverage.exclusions>
 	</properties>
 
@@ -132,7 +133,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${surefire.version}</version>
 					<configuration>
-						<argLine>${argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+						<argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -151,7 +152,7 @@
 						<excludes>
 							<exclude>**/Note.*</exclude>
 							<exclude>**/app/*.*</exclude>
-							<exclude>**/NotesMySqlRepository</exclude>
+							<exclude>**/NotesMySqlRepository.*</exclude>
 						</excludes>
 					</configuration>
 					<executions>
@@ -184,8 +185,7 @@
 							<param>com.examples.notebook.controller.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>
-								com.examples.notebook.controller.NotebookControllerTest</param>
+							<param>com.examples.notebook.controller.NotebookControllerTest</param>
 						</targetTests>
 						<mutators>
 							<mutator>DEFAULTS</mutator>
@@ -229,7 +229,7 @@
 					<systemPropertyVariables>
 						<mongo.port>${mongo.port}</mongo.port>
 					</systemPropertyVariables>
-					<argLine>${argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+					<argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 				</configuration>
 				<executions>
 					<execution>
@@ -313,29 +313,18 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>jacoco</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>coveralls</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-					</plugin>
 					<plugin>
 						<groupId>org.eluder.coveralls</groupId>
 						<artifactId>coveralls-maven-plugin</artifactId>
