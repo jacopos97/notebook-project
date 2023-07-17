@@ -3,7 +3,7 @@ package com.examples.notebook.model;
 import java.util.Objects;
 
 public class Note {
-	
+
 	private String id;
 	private String date;
 	private String title;
@@ -45,7 +45,7 @@ public class Note {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Note other = (Note) obj;
+		var other = (Note) obj;
 		return Objects.equals(body, other.body) && Objects.equals(date, other.date) && Objects.equals(id, other.id)
 				&& Objects.equals(title, other.title);
 	}
@@ -54,5 +54,5 @@ public class Note {
 	public String toString() {
 		return id;
 	}
-	
+
 }

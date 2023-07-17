@@ -14,6 +14,6 @@ public interface NotesRepository {
 
 	public void delete(String idNoteToDelete);
 
-	public void modify(String idNoteToModify, Note noteToModify);
+	public void modify(String idNoteToModify, Note noteModified);
 
 }

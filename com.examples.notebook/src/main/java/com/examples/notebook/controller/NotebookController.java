@@ -45,13 +45,13 @@ public class NotebookController {
 		}
 		if (checkNoteValidity(noteModified)) {
 			notesRepository.modify(idNoteToModify, noteModified);
-			notebookView.noteModified(noteModified);			
+			notebookView.noteModified(noteModified);
 		}
 	}
 
 	private boolean checkNoteValidity(Note noteModified) {
 		if (!GenericValidator.isDate(noteModified.getDate(), "yyyy/mm/dd", true)) {
-				notebookView.showError("Note's date must have yyyy/mm/dd form.");
+			notebookView.showError("Note's date must have yyyy/mm/dd form.");
 			return false;
 		}
 		if (notesRepository.findById(noteModified.getId()) != null) {

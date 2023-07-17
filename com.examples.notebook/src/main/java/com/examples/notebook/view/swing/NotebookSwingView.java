@@ -43,13 +43,13 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	private JButton btnModify;
 	private JButton btnDelete;
 	private JButton btnAdd;
-	
+
 	private transient NotebookController notebookController;
 
 	DefaultListModel<Note> getListNotesModel() {
 		return listNotesModel;
 	}
-	
+
 	JList<Note> getListNotes() {
 		return listNotes;
 	}

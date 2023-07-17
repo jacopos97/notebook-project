@@ -16,7 +16,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 
 public class NotesMongoRepositoryIT {
-	
+
 	private MongoClient client;
 	private NotesMongoRepository notesMongoRepository;
 	private MongoCollection<Document> notesCollection;
@@ -24,7 +24,7 @@ public class NotesMongoRepositoryIT {
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 	private static final String NOTEBOOK_DB_NAME = "notebook";
 	private static final String NOTE_COLLECTION_NAME = "note";
-	
+
 	@Before
 	public void setUp() {
 		client = new MongoClient(new ServerAddress("localhost", mongoPort));
@@ -33,47 +33,47 @@ public class NotesMongoRepositoryIT {
 		database.drop();
 		notesCollection = database.getCollection(NOTE_COLLECTION_NAME);
 	}
-	
+
 	@After
 	public void tearDown() {
 		client.close();
 	}
-	
+
 	@Test
 	public void testFindAllWhenDatabaseIsEmpty() {
 		assertThat(notesMongoRepository.findAll()).isEmpty();;
 	}
-	
+
 	@Test
 	public void testFindAllWhenDatabaseIsNotEmpty() {
 		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
 		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
 		assertThat(notesMongoRepository.findAll())
-			.containsExactly(
-				new Note("2000/01/01", "Title1", "Body1"),
-				new Note("2000/01/02", "Title2", "Body2"));
+				.containsExactly(
+						new Note("2000/01/01", "Title1", "Body1"),
+						new Note("2000/01/02", "Title2", "Body2"));
 	}
-	
+
 	@Test
 	public void testFindByIdNotFound() {
 		assertThat(notesMongoRepository.findById("2000/01/01-Title"))
-			.isNull();
+				.isNull();
 	}
-	
+
 	@Test
 	public void testFindByIdFound() {
 		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
 		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
 		assertThat(notesMongoRepository.findById("2000/01/02-Title2"))
-			.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
+				.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
 	}
-	
+
 	@Test
 	public void testSave() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		notesMongoRepository.save(note);
 		assertThat(readAllNotesFromDatabase())
-			.containsExactly(note);
+				.containsExactly(note);
 	}
 	
 	@Test
@@ -82,7 +82,7 @@ public class NotesMongoRepositoryIT {
 		notesMongoRepository.delete("2000/01/01-Title");
 		assertThat(readAllNotesFromDatabase()).isEmpty();
 	}
-	
+
 	@Test
 	public void testModify() {
 		addTestNoteToDatabase("2000/01/01", "OldTitle", "OldBody");
@@ -101,10 +101,10 @@ public class NotesMongoRepositoryIT {
 	private void addTestNoteToDatabase(String date, String title, String body) {
 		notesCollection.insertOne(
 				new Document()
-				.append("date", date)
-				.append("title", title)
-				.append("body", body)
-				.append("id", date + "-" + title));
+						.append("date", date)
+						.append("title", title)
+						.append("body", body)
+						.append("id", date + "-" + title));
 	}
 
 }

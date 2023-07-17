@@ -25,10 +25,10 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	private FrameFixture window;
 	private NotebookSwingView notebookSwingView;
-	
+
 	@Mock
 	private NotebookController notebookController;
-	
+
 	private AutoCloseable closeable;
 
 	@Override
@@ -42,7 +42,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window = new FrameFixture(robot(), notebookSwingView);
 		window.show();
 	}
-	
+
 	@Override
 	protected void onTearDown() throws Exception {
 		closeable.close();
@@ -73,9 +73,8 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).requireEnabled();
 	}
 
-	
 	@Test
-	public void testWhenDateAndTitleAreNonEmptyAndAnElementFromTheListIsSelectedThenAddButtonShouldBeDisabled() {
+	public void testWhenDateAndTitleAreNotEmptyAndAnElementFromTheListIsSelectedThenAddButtonShouldBeDisabled() {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000/01/01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
@@ -85,14 +84,11 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void testWhenEitherDateOrTitleAreBlankThenAddButtonShouldBeDisabled() {
 		var date = window.textBox("date");
 		var title = window.textBox("title");
-
 		date.enterText("2000/01/01");
 		title.enterText(" ");
 		window.button(JButtonMatcher.withText("Add")).requireDisabled();
-
 		date.setText("");
 		title.setText("");
-
 		date.enterText(" ");
 		title.enterText("Title");
 		window.button(JButtonMatcher.withText("Add")).requireDisabled();
@@ -111,7 +107,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		deleteButton.requireDisabled();
 		newButton.requireDisabled();
 	}
-	
+
 	@Test
 	public void testModifyButtonShouldBeEnabledOnlyWhenANoteIsSelectedAndAlmostATextFieldChange() {
 		GuiActionRunner.execute(
@@ -122,7 +118,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).requireEnabled();
 	}
-	
+
 	@Test
 	public void testDateTextAndTitleTextAndNoteTextShouldBeShownOnlyWhenANoteIsSelected() {
 		GuiActionRunner.execute(
@@ -141,17 +137,19 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testsShowAllNotesShouldAddNoteDescriptionsToTheList() {
+	public void testShowAllNotesShouldAddNoteDescriptionsToTheList() {
 		var note1 = new Note("2000/01/01", "Title1", "Body1");
 		var note2 = new Note("2000/01/02", "Title2", "Body2");
-		GuiActionRunner.execute(() -> notebookSwingView.showAllNotes(Arrays.asList(note1, note2)));
+		GuiActionRunner.execute(
+				() -> notebookSwingView.showAllNotes(Arrays.asList(note1, note2)));
 		var listContents = window.list().contents();
 		assertThat(listContents).containsExactly(note1.toString(), note2.toString());
 	}
 
 	@Test
 	public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
-		GuiActionRunner.execute(() -> notebookSwingView.showError("error message"));
+		GuiActionRunner.execute(
+				() -> notebookSwingView.showError("error message"));
 		window.label("errorMessageLabel").requireText("error message");
 	}
 
@@ -166,7 +164,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.list("noteList").selectItem(0);
 		window.label("errorMessageLabel").requireText(" ");
 	}
-	
+
 	@Test
 	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabel() {
 		var note = new Note("2000/01/01", "Title", "Body");
@@ -174,8 +172,9 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 			var errorLabel = notebookSwingView.getLblError();
 			errorLabel.setText("error");
 		});
-		GuiActionRunner.execute(() -> notebookSwingView.noteAdded(new Note("2000/01/01", "Title", "Body")));
-		String[] listContents = window.list().contents();
+		GuiActionRunner.execute(
+				() -> notebookSwingView.noteAdded(new Note("2000/01/01", "Title", "Body")));
+		var listContents = window.list().contents();
 		assertThat(listContents).containsExactly(note.toString());
 		window.label("errorMessageLabel").requireText(" ");
 	}
@@ -192,13 +191,13 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 			errorLabel.setText("error");
 		});
 		GuiActionRunner.execute(
-			() -> notebookSwingView.noteRemoved(new Note("2000/01/01", "Title1", "Body1"))
+				() -> notebookSwingView.noteRemoved(new Note("2000/01/01", "Title1", "Body1"))
 		);
-		String[] listContents = window.list().contents();
+		var listContents = window.list().contents();
 		assertThat(listContents).containsExactly(note2.toString());
 		window.label("errorMessageLabel").requireText(" ");
 	}
-	
+
 	@Test
 	public void testNoteModifiedShouldModifyTheNoteFromTheListAndResetTheErrorLabel() {
 		var oldNote = new Note("2000/01/01", "OldTitle", "OldBody");
@@ -211,12 +210,11 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 			errorLabel.setText("error");
 		});
 		GuiActionRunner.execute(
-			() -> notebookSwingView.noteModified(newNote));
-		String[] listContents = window.list().contents();
+				() -> notebookSwingView.noteModified(newNote));
+		var listContents = window.list().contents();
 		assertThat(listContents).containsExactly(newNote.toString());
 		window.label("errorMessageLabel").requireText(" ");
 	}
-	
 
 	@Test
 	public void testAddButtonShouldDelegateToNotebookControllerAddNote() {
@@ -226,9 +224,9 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		verify(notebookController).addNote(new Note("2000/01/01", "Title", "Body"));
 	}
-	
+
 	@Test
-	public void testAddButtonShouldDisabledItselfAndCleanTextFieldsWhenClicked() {
+	public void testAddButtonShouldDisabledItselfAndClearTextFieldsWhenClicked() {
 		var date = window.textBox("date");
 		var title = window.textBox("title");
 		var body = window.textBox("body");
@@ -241,7 +239,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(title.text()).isEmpty();
 		assertThat(body.text()).isEmpty();
 	}
-	
+
 	@Test
 	public void testDeleteButtonShouldDelegateToNotebookControllerDeleteNote() {
 		var note1 = new Note("2000/01/01", "Title1", "Body1");
@@ -255,7 +253,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Delete")).click();
 		verify(notebookController).deleteNote(note2);
 	}
-	
+
 	@Test
 	public void testModifyButtonShouldDelegateToNotebookControllerModifyNote() {
 		GuiActionRunner.execute(
@@ -267,11 +265,11 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Modify")).click();
 		verify(notebookController).modifyNote("2000/01/01-Title", new Note("2000/01/02", "NewTitle", "NewBody"));
 	}
-	
+
 	@Test
 	public void testModifyButtonShouldDisabledItselfWhenClicked() {
 		GuiActionRunner.execute(
-			() -> notebookSwingView.getListNotesModel().addElement(new Note("2000/01/01", "Title", "Body")));
+				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000/01/01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
 		window.textBox("date").deleteText().enterText("2000/01/02");
 		window.textBox("title").deleteText().enterText("NewTitle");
@@ -279,9 +277,9 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Modify")).click();
 		window.button(JButtonMatcher.withText("Modify")).requireDisabled();
 	}
-	
+
 	@Test
-	public void testNewButtonShouldClearTextBoxesAndDeselectNoteFromTheList() {
+	public void testNewButtonShouldClearTextBoxesAndDeselectNoteFromTheListWhenClicked() {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000/01/01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
@@ -291,5 +289,5 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		assertThat(window.textBox("body").text()).isEmpty();
 		window.list("noteList").requireNoSelection();
 	}
-	
+
 }

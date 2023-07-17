@@ -32,7 +32,7 @@ public class NotebookApp implements Callable<Void> {
 	}
 	
 	@Override
-	public Void call() throws Exception {
+	public Void call() {
 		EventQueue.invokeLater(() -> {
 			try {
 				var client = new MongoClient(new ServerAddress(
