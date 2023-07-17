@@ -18,6 +18,10 @@ import com.examples.notebook.model.Note;
 
 public class NotesMySqlRepositoryIT {
 	
+	private static final String SELECT_ALL_NOTES = "select * from notebook.Notes";
+	private static final String SAVE_NOTE = "insert into notebook.Notes values (?, ?, ?, ?)";
+	private static final String SQL_EXCEPTION_MESSAGE = "SQLException";
+	
 	private Connection connection;
 	private NotesMySqlRepository notesMySqlRepository;
 	
@@ -27,11 +31,10 @@ public class NotesMySqlRepositoryIT {
 	public void setUp(){
 		try {
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/notebook","user","password");
-			var statement = connection.createStatement();
-			notesMySqlRepository = new NotesMySqlRepository(statement);
-			statement.executeUpdate("truncate notebook.Notes");
+			notesMySqlRepository = new NotesMySqlRepository(connection);
+			connection.createStatement().executeUpdate("truncate notebook.Notes");
 		} catch (SQLException e) {
-			LOGGER.error("SQLException", e);
+			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 	}
 	
@@ -40,7 +43,7 @@ public class NotesMySqlRepositoryIT {
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			LOGGER.error("SQLException", e);
+			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 	}
 
@@ -107,22 +110,25 @@ public class NotesMySqlRepositoryIT {
 	private List<Note> readAllNotesFromDatabase() {
 		var noteList = new ArrayList<Note>();
 		try {
-			var tableRow = connection.createStatement().executeQuery("select * from notebook.Notes");
+			var tableRow = connection.prepareStatement(SELECT_ALL_NOTES).executeQuery();
 			while (tableRow.next())
 				noteList.add(new Note(tableRow.getString("NoteDate"), tableRow.getString("Title"), tableRow.getString("Body")));
 		} catch (SQLException e) {
-			LOGGER.error("SQLException", e);
+			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 		return noteList;
 	}
 
 	private void addTestNoteToDatabase(String date, String title, String body) {
-		String query = " insert into notebook.Notes values ('" + date + 
-				"', '" + title +"', '" + body + "', '" + date + "-" + title + "')";
 		try {
-			connection.createStatement().executeUpdate(query);
+			var preparedStatement = connection.prepareStatement(SAVE_NOTE);
+			preparedStatement.setString(1, date);
+			preparedStatement.setString(2, title);
+			preparedStatement.setString(3, body);
+			preparedStatement.setString(4, date + "-" + title);
+			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("SQLException", e);
+			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 	}
 
