@@ -226,9 +226,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${failsafe.version}</version>
 				<configuration>
-					<systemPropertyVariables>
-						<mongo.port>${mongo.port}</mongo.port>
-					</systemPropertyVariables>
 					<argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
 				</configuration>
 				<executions>
@@ -266,11 +263,11 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>mongo.port:27017</port>
+									<port>27017:27017</port>
 								</ports>
 								<wait>
 									<http>
-										<url>http://localhost:${mongo.port}</url>
+										<url>http://localhost:27017</url>
 										<method>GET</method>
 										<status>200</status>
 									</http>
