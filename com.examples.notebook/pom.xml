@@ -306,12 +306,7 @@
 							</run>
 						</image>
 						<image>
-							<name>mysql_database</name>
-							<build>
-								<dockerFileDir>
-									${project.basedir}/src/test/resources/dockerfile
-								</dockerFileDir>
-							</build>
+							<name>mysql:5.7</name>
 							<run>
 								<ports>
 									<port>3306:3306</port>
@@ -320,6 +315,11 @@
 									<log>${mysql.log}</log>
 									<time>30000</time>
 								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>secret</MYSQL_ROOT_PASSWORD>
+									<MYSQL_USER>user</MYSQL_USER>
+									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
+								</env>
 							</run>
 						</image>
 					</images>
@@ -329,7 +329,6 @@
 						<id>docker-start</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
