@@ -53,7 +53,8 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 		addTestNoteToDatabase(NOTE_FIXTURE_2_DATE, NOTE_FIXTURE_2_TITLE, NOTE_FIXTURE_2_BODY);
 		application("com.examples.notebook.app.NotebookApp")
 				.withArgs(
-						"--db-name=" + NOTEBOOK_DB_NAME)
+						"--db-name=" + NOTEBOOK_DB_NAME,
+						"--collection-name=" + NOTE_COLLECTION_NAME)
 				.start();
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
 			@Override

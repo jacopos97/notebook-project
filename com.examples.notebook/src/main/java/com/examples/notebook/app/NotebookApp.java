@@ -22,11 +22,14 @@ import com.mongodb.ServerAddress;
 @Command(mixinStandardHelpOptions = true)
 public class NotebookApp implements Callable<Void> {
 
-	@Option(names = { "--db-name" }, description = "Database name. The default value is: notebook")
+	@Option(names = { "--db-name" }, description = "Database name")
 	private String databaseName = "notebook";
+	
+	@Option(names = { "--collection-name" }, description = "Collection name")
+	private String collectionName = "notes";
 
 	@Option(names = {
-			"--mysql-db" }, description = "Database type. true for MySQL, false for MongoDB. The default value is: false")
+			"--mysql-db" }, description = "Database type. true for MySQL, false for MongoDB")
 	private boolean mysqlDB = false;
 
 	@Option(names = { "--mysql-root-password" }, description = "MySQL root password")
@@ -38,9 +41,6 @@ public class NotebookApp implements Callable<Void> {
 	@Option(names = { "--mysql-user-password" }, description = "MySQL user password")
 	private String mysqlUserPassword = null;
 
-	// @Option(names = { "--db-collection" }, description = "Collection name")
-	private static final String COLLECTION = "notes";
-
 	private static final Logger LOGGER = LogManager.getLogger(NotebookApp.class);
 
 	public static void main(String[] args) {
@@ -51,30 +51,35 @@ public class NotebookApp implements Callable<Void> {
 	public Void call() {
 		EventQueue.invokeLater(() -> {
 			try {
-				NotesRepository notesRepository;
-				if (mysqlDB) {
-					if (checkArgumentsInsertion(mysqlRootPassword, mysqlUser, mysqlUserPassword)) {
-						var port = Integer.parseInt(System.getProperty("mysql.port", "3306"));
-						var url = "jdbc:mysql://localhost:" + port + "/";
-						configureDatabase(url);
-						notesRepository = new NotesMySqlRepository(
-								DriverManager.getConnection(url + databaseName, mysqlUser, mysqlUserPassword));
+				if (checkDatabaseNameAndCollectionNameValidity()) {
+					NotesRepository notesRepository;
+					if (mysqlDB) {
+						if (checkMySqlArgumentsInsertion(mysqlRootPassword, mysqlUser, mysqlUserPassword)) {
+							var port = Integer.parseInt(System.getProperty("mysql.port", "3306"));
+							var url = "jdbc:mysql://localhost:" + port + "/";
+							configureDatabase(url);
+							notesRepository = new NotesMySqlRepository(
+									DriverManager.getConnection(url + databaseName, mysqlUser, mysqlUserPassword));
+						} else {
+							LOGGER.error(
+									"If you want to use a MySQL database, you must pass: root's password, user and user's password");
+							return;
+						}
 					} else {
-						LOGGER.error(
-								"If you want to use a MySQL database, you must pass: root's password, user and user's password");
-						return;
+						var client = new MongoClient(new ServerAddress(
+								"localhost",
+								Integer.parseInt(System.getProperty("mongo.port", "27017"))));
+						notesRepository = new NotesMongoRepository(client , databaseName, collectionName);
 					}
+					var notebookView = new NotebookSwingView();
+					var notebookController = new NotebookController(notesRepository, notebookView);
+					notebookView.setNotebookController(notebookController);
+					notebookView.setVisible(true);
+					notebookController.getAllNotes();
 				} else {
-					var client = new MongoClient(new ServerAddress(
-							"localhost",
-							Integer.parseInt(System.getProperty("mongo.port", "27017"))));
-					notesRepository = new NotesMongoRepository(client , databaseName, COLLECTION);
+					LOGGER.error(
+							"Database and collection name must be only alphabet's letters");
 				}
-				var notebookView = new NotebookSwingView();
-				var notebookController = new NotebookController(notesRepository, notebookView);
-				notebookView.setNotebookController(notebookController);
-				notebookView.setVisible(true);
-				notebookController.getAllNotes();
 			} catch (Exception e) {
 				LOGGER.error("Exception", e);
 			}
@@ -82,7 +87,11 @@ public class NotebookApp implements Callable<Void> {
 		return null;
 	}
 
-	private boolean checkArgumentsInsertion(String rootPassword, String user, String userPassword) {
+	private boolean checkDatabaseNameAndCollectionNameValidity() {
+		return databaseName.matches("^[A-Za-z]+$") && collectionName.matches("^[A-Za-z]+$");
+	}
+
+	private boolean checkMySqlArgumentsInsertion(String rootPassword, String user, String userPassword) {
 		return rootPassword != null && user != null && userPassword != null;
 	}
 
