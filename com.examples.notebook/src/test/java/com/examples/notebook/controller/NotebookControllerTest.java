@@ -40,7 +40,7 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testGetAllNotes() {
-		var notes = asList(new Note("2000/01/01", "Title", "Body"));
+		var notes = asList(new Note("2000-01-01", "Title", "Body"));
 		when(notesRepository.findAll())
 				.thenReturn(notes);
 		notebookController.getAllNotes();
@@ -50,8 +50,8 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testAddNoteWhenNoteDoesNotAlreadyExist() {
-		var note = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01-Title"))
+		var note = new Note("2000-01-01", "Title", "Body");
+		when(notesRepository.findById("2000-01-01_Title"))
 				.thenReturn(null);
 		notebookController.addNote(note);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
@@ -62,11 +62,11 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testAddNoteWhenANoteWithTheSameIdAlreadyExists() {
-		var date = "2000/01/01";
+		var date = "2000-01-01";
 		var title = "Title";
 		var noteToAdd = new Note(date, title, "BodyOfTheNewNote");
 		var existingNote = new Note(date, title, "BodyOfTheExistingNote");
-		when(notesRepository.findById(date + "-" + title))
+		when(notesRepository.findById(date + "_" + title))
 				.thenReturn(existingNote);
 		notebookController.addNote(noteToAdd);
 		verify(notebookView)
@@ -76,17 +76,17 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testAddNoteWhenNoteHasANotValidDate() {
-		var note = new Note("2000/01/051", "Title", "Body");
+		var note = new Note("2000-01-051", "Title", "Body");
 		notebookController.addNote(note);
 		verify(notebookView)
-				.showError("Note's date must have yyyy/mm/dd form.");
+				.showError("Note's date must have yyyy-MM-dd form.");
 		verifyNoMoreInteractions(notesRepository);
 	}
 
 	@Test
 	public void testDeleteNoteWhenNoteExists() {
-		var noteToDelete = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01-Title"))
+		var noteToDelete = new Note("2000-01-01", "Title", "Body");
+		when(notesRepository.findById("2000-01-01_Title"))
 				.thenReturn(noteToDelete);
 		notebookController.deleteNote(noteToDelete);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
@@ -97,8 +97,8 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testDeleteNoteWhenNoteDoesNotExist() {
-		var noteToDelete = new Note("2000/01/01", "Title", "Body");
-		when(notesRepository.findById("2000/01/01-Title"))
+		var noteToDelete = new Note("2000-01-01", "Title", "Body");
+		when(notesRepository.findById("2000-01-01_Title"))
 				.thenReturn(null);
 		notebookController.deleteNote(noteToDelete);
 		verify(notebookView)
@@ -108,25 +108,25 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testModifyNoteWhenNoteChangesIdInANotExistentId() {
-		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
-		when(notesRepository.findById("2000/01/01" + "-" + "OldTitle"))
+		var noteToModify = new Note("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002-02-02", "NewTitle", "NewBody");
+		when(notesRepository.findById("2000-01-01" + "_" + "OldTitle"))
 				.thenReturn(noteToModify);
 		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		InOrder inOrder = inOrder(notesRepository, notebookView);
-		inOrder.verify(notesRepository).modify("2000/01/01-OldTitle", noteModified);
+		inOrder.verify(notesRepository).modify("2000-01-01_OldTitle", noteModified);
 		inOrder.verify(notebookView).noteModified(noteModified);
 		inOrder.verifyNoMoreInteractions();
 	}
 
 	@Test
 	public void testModifyNoteWhenModifiedNoteChangesIdInAnExistentId() {
-		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
-		var noteInRepository = new Note("2002/02/02", "NewTitle", "Body");
-		when(notesRepository.findById("2000/01/01-OldTitle"))
+		var noteToModify = new Note("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002-02-02", "NewTitle", "NewBody");
+		var noteInRepository = new Note("2002-02-02", "NewTitle", "Body");
+		when(notesRepository.findById("2000-01-01_OldTitle"))
 				.thenReturn(noteToModify);
-		when(notesRepository.findById("2002/02/02" + "-" + "NewTitle"))
+		when(notesRepository.findById("2002-02-02" + "_" + "NewTitle"))
 				.thenReturn(noteInRepository);
 		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		verify(notebookView)
@@ -136,9 +136,9 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testModifyNoteWhenNoteDoesNotExist() {
-		var idNoteToModify = "2000/01/01-OldTitle";
-		var noteModified = new Note("2002/02/0872", "NewTitle", "NewBody");
-		when(notesRepository.findById("2000/01/01-OldTitle"))
+		var idNoteToModify = "2000-01-01_OldTitle";
+		var noteModified = new Note("2002-02-0872", "NewTitle", "NewBody");
+		when(notesRepository.findById("2000-01-01_OldTitle"))
 				.thenReturn(null);
 		notebookController.modifyNote(idNoteToModify, noteModified);
 		verify(notebookView)
@@ -148,13 +148,13 @@ public class NotebookControllerTest {
 
 	@Test
 	public void testModifyNoteWhenNoteHasANotValidDate() {
-		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2002/02/0872", "NewTitle", "NewBody");
-		when(notesRepository.findById("2000/01/01-OldTitle"))
+		var noteToModify = new Note("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002-02-0872", "NewTitle", "NewBody");
+		when(notesRepository.findById("2000-01-01_OldTitle"))
 				.thenReturn(noteToModify);
-		notebookController.modifyNote("2000/01/01-OldTitle", noteModified);
+		notebookController.modifyNote("2000-01-01_OldTitle", noteModified);
 		verify(notebookView)
-				.showError("Note's date must have yyyy/mm/dd form.");
+				.showError("Note's date must have yyyy-MM-dd form.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 

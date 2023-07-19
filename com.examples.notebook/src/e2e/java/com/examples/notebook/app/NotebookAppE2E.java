@@ -27,15 +27,15 @@ import com.mongodb.client.model.Filters;
 @RunWith(GUITestRunner.class)
 public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 
-	private static final String NOTE_FIXTURE_1_DATE = "2001/01/01";
+	private static final String NOTE_FIXTURE_1_DATE = "2001-01-01";
 	private static final String NOTE_FIXTURE_1_TITLE = "Title1";
 	private static final String NOTE_FIXTURE_1_BODY = "Body1";
-	private static final String NOTE_FIXTURE_1_ID = "2001/01/01-Title1";
+	private static final String NOTE_FIXTURE_1_ID = "2001-01-01_Title1";
 
-	private static final String NOTE_FIXTURE_2_DATE = "2002/02/02";
+	private static final String NOTE_FIXTURE_2_DATE = "2002-02-02";
 	private static final String NOTE_FIXTURE_2_TITLE = "Title2";
 	private static final String NOTE_FIXTURE_2_BODY = "Body2";
-	private static final String NOTE_FIXTURE_2_ID = "2002/02/02-Title2";
+	private static final String NOTE_FIXTURE_2_ID = "2002-02-02_Title2";
 
 	private MongoClient mongoClient;
 	private FrameFixture window;
@@ -80,12 +80,12 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddButtonSuccess() {
-		window.textBox("date").enterText("2010/04/05");
+		window.textBox("date").enterText("2010-04-05");
 		window.textBox("title").enterText("Some Title");
 		window.textBox("body").enterText("Some Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents())
-				.anySatisfy(note -> assertThat(note).contains("2010/04/05-Some Title"));
+				.anySatisfy(note -> assertThat(note).contains("2010-04-05_Some Title"));
 	}
 
 	@Test
@@ -102,12 +102,12 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddButtonErrorCausedByANotValidDate() {
-		window.textBox("date").enterText("2010/44/");
+		window.textBox("date").enterText("2010-44-");
 		window.textBox("title").enterText("Some Title");
 		window.textBox("body").enterText("Some Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.label("errorMessageLabel").text())
-				.contains("Note's date must have yyyy/mm/dd form.");
+				.contains("Note's date must have yyyy-MM-dd form.");
 	}
 
 	@Test
@@ -136,13 +136,13 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	public void testModifyButtonSuccess() {
 		window.list("noteList")
 				.selectItem(Pattern.compile(NOTE_FIXTURE_1_ID));
-		window.textBox("date").deleteText().enterText("2010/04/05");
+		window.textBox("date").deleteText().enterText("2010-04-05");
 		window.textBox("title").deleteText().enterText("Some Title");
 		window.textBox("body").deleteText().enterText("Some Body");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents())
 				.noneMatch(note -> note.contains(NOTE_FIXTURE_1_ID))
-				.anySatisfy(note -> assertThat(note).contains("2010/04/05-Some Title"));
+				.anySatisfy(note -> assertThat(note).contains("2010-04-05_Some Title"));
 	}
 
 	@Test
@@ -150,7 +150,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	public void testModifyButtonErrorCausedByANotFoundNote() {
 		window.list("noteList")
 				.selectItem(Pattern.compile(NOTE_FIXTURE_1_ID));
-		window.textBox("date").deleteText().enterText("2010/04/05");
+		window.textBox("date").deleteText().enterText("2010-04-05");
 		window.textBox("title").deleteText().enterText("Some Title");
 		window.textBox("body").deleteText().enterText("Some Body");
 		removeTestNoteFromDatabase(NOTE_FIXTURE_1_ID);
@@ -177,12 +177,12 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	public void testModifyButtonErrorCausedByANotValidDate() {
 		window.list("noteList")
 				.selectItem(Pattern.compile(NOTE_FIXTURE_1_ID));
-		window.textBox("date").deleteText().enterText("2010/44/");
+		window.textBox("date").deleteText().enterText("2010-44-");
 		window.textBox("title").deleteText().enterText("Some Title");
 		window.textBox("body").deleteText().enterText("Some Body");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.label("errorMessageLabel").text())
-				.contains("Note's date must have yyyy/mm/dd form.");
+				.contains("Note's date must have yyyy-MM-dd form.");
 	}
 
 	private void addTestNoteToDatabase(String date, String title, String body) {
@@ -194,7 +194,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 								.append("date", date)
 								.append("title", title)
 								.append("body", body)
-								.append("id", date + "-" + title));
+								.append("id", date + "_" + title));
 	}
 
 	private void removeTestNoteFromDatabase(String id) {

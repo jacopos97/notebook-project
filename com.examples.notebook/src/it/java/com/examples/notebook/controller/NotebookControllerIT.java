@@ -51,7 +51,7 @@ public class NotebookControllerIT {
 
 	@Test
 	public void testGetAllNotes() {
-		var note = new Note("2000/01/01", "Title", "Body");
+		var note = new Note("2000-01-01", "Title", "Body");
 		notesRepository.save(note);
 		notebookController.getAllNotes();
 		verify(notebookView)
@@ -60,14 +60,14 @@ public class NotebookControllerIT {
 
 	@Test
 	public void testAddNote() {
-		var note = new Note("2000/01/01", "Title", "Body");
+		var note = new Note("2000-01-01", "Title", "Body");
 		notebookController.addNote(note);
 		verify(notebookView).noteAdded(note);
 	}
 
 	@Test
 	public void testDeleteNote() {
-		var noteToDelete = new Note("2000/01/01", "Title", "Body");
+		var noteToDelete = new Note("2000-01-01", "Title", "Body");
 		notesRepository.save(noteToDelete);
 		notebookController.deleteNote(noteToDelete);
 		verify(notebookView).noteRemoved(noteToDelete);
@@ -75,8 +75,8 @@ public class NotebookControllerIT {
 
 	@Test
 	public void testModifyNote() {
-		var noteToModify = new Note("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2002/02/02", "NewTitle", "NewBody");
+		var noteToModify = new Note("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2002-02-02", "NewTitle", "NewBody");
 		notesRepository.save(noteToModify);
 		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		verify(notebookView).noteModified(noteModified);

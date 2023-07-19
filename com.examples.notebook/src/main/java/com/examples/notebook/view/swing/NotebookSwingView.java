@@ -115,7 +115,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		scrollPaneList.setViewportView(listNotes);
 		listNotes.setName("noteList");
 
-		JLabel lblData = new JLabel("Date (yyyy/mm/dd)");
+		JLabel lblData = new JLabel("Date (yyyy-MM-dd)");
 		GridBagConstraints gbcLblData = new GridBagConstraints();
 		gbcLblData.insets = new Insets(0, 0, 5, 5);
 		gbcLblData.anchor = GridBagConstraints.WEST;
