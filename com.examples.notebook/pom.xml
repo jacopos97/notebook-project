@@ -257,6 +257,10 @@
 				<version>${failsafe.version}</version>
 				<configuration>
 					<argLine>${argLine} ${jvm.argLine}</argLine>
+					<systemPropertyVariables>
+						<mongo.port>${mongo.port}</mongo.port>
+						<mysql.port>${mysql.port}</mysql.port>
+					</systemPropertyVariables>
 				</configuration>
 				<executions>
 					<execution>
@@ -293,11 +297,11 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>27017:27017</port>
+									<port>mongo.port:27017</port>
 								</ports>
 								<wait>
 									<http>
-										<url>http://localhost:27017</url>
+										<url>http://localhost:${mongo.port}</url>
 										<method>GET</method>
 										<status>200</status>
 									</http>
@@ -309,7 +313,7 @@
 							<name>mysql:5.7</name>
 							<run>
 								<ports>
-									<port>3306:3306</port>
+									<port>mysql.port:3306</port>
 								</ports>
 								<wait>
 									<log>${mysql.log}</log>

@@ -22,8 +22,8 @@ public class NotebookApp implements Callable<Void> {
 	@Option(names = { "--db-name" }, description = "Database name")
 	private String databaseName = "notebook";
 	
-	@Option(names = { "--db-collection" }, description = "Collection name")
-	private String collectionName = "note";
+	//@Option(names = { "--db-collection" }, description = "Collection name")
+	private static final String collectionName = "notes";
 	
 	private static final Logger LOGGER = LogManager.getLogger(NotebookApp.class);
 	
@@ -38,7 +38,7 @@ public class NotebookApp implements Callable<Void> {
 				var client = new MongoClient(new ServerAddress(
 					"localhost",
 					Integer.parseInt(System.getProperty("mongo.port", "27017"))));
-				var notesRepository = new NotesMongoRepository(client , "notebook", "note");
+				var notesRepository = new NotesMongoRepository(client , databaseName, collectionName);
 				var notebookView = new NotebookSwingView();
 				var notebookController = new NotebookController(notesRepository, notebookView);
 				notebookView.setNotebookController(notebookController);

@@ -69,8 +69,8 @@ public class NotesMySqlRepository implements NotesRepository {
 
 	@Override
 	public void delete(String idNoteToDelete) {
-		try (var preparedStatement = connectionDatabase.prepareStatement(
-				"delete from notes where Id=?")) {
+		var query = "delete from notes where Id=?";
+		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			preparedStatement.setString(1, idNoteToDelete);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {

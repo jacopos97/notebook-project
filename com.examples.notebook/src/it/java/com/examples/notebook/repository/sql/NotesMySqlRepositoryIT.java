@@ -20,6 +20,8 @@ import com.examples.notebook.model.Note;
 public class NotesMySqlRepositoryIT {
 	
 	private static final String DATABASE_NAME = "notebook";
+	private static final int port = Integer.parseInt(System.getProperty("mysql.port", "3306"));
+	private static final String url = "jdbc:mysql://localhost:" + port + "/";
 
 	private static final String CREATE_DATABASE_NOTEBOOK = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
 	private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " +
@@ -42,7 +44,7 @@ public class NotesMySqlRepositoryIT {
 	@BeforeClass
 	public static void setUpServer() {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "secret");
+			connection = DriverManager.getConnection(url, "root", "secret");
 			var statement = connection.createStatement();
 			statement.executeUpdate(CREATE_DATABASE_NOTEBOOK);
 			statement.executeUpdate(CREATE_TABLE_NOTES);
@@ -56,7 +58,7 @@ public class NotesMySqlRepositoryIT {
 	@Before
 	public void setUp() {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DATABASE_NAME,"user","password");
+			connection = DriverManager.getConnection(url + DATABASE_NAME,"user","password");
 			notesMySqlRepository = new NotesMySqlRepository(connection);
 			var statement = connection.createStatement();
 			statement.executeUpdate("truncate notes");

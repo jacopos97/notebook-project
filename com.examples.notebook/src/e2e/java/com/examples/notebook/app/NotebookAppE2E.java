@@ -41,7 +41,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 	private FrameFixture window;
 
 	private static final String NOTEBOOK_DB_NAME = "notebook";
-	private static final String NOTE_COLLECTION_NAME = "note";
+	private static final String NOTE_COLLECTION_NAME = "notes";
 
 	@Override
 	protected void onSetUp() {
@@ -53,8 +53,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 		addTestNoteToDatabase(NOTE_FIXTURE_2_DATE, NOTE_FIXTURE_2_TITLE, NOTE_FIXTURE_2_BODY);
 		application("com.examples.notebook.app.NotebookApp")
 				.withArgs(
-						"--db-name=" + NOTEBOOK_DB_NAME,
-						"--db-collection=" + NOTE_COLLECTION_NAME)
+						"--db-name=" + NOTEBOOK_DB_NAME)
 				.start();
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
 			@Override
