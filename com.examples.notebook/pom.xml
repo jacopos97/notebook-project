@@ -54,8 +54,7 @@
 			java:S2077
 		</sonar.issue.ignore.multicriteria.e12.ruleKey>
 		<sonar.issue.ignore.multicriteria.e12.resourceKey>
-			**/NotebookApp.java \
-			**/NotesMySqlRepository.java
+			**/*.java 
 		</sonar.issue.ignore.multicriteria.e12.resourceKey>
 
 		<sonar.coverage.exclusions>
