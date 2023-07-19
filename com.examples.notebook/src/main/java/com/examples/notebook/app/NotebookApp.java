@@ -23,7 +23,7 @@ public class NotebookApp implements Callable<Void> {
 	private String databaseName = "notebook";
 	
 	//@Option(names = { "--db-collection" }, description = "Collection name")
-	private static final String collectionName = "notes";
+	private static final String collection = "notes";
 	
 	private static final Logger LOGGER = LogManager.getLogger(NotebookApp.class);
 	
