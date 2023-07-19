@@ -56,10 +56,6 @@ public class NotebookController {
 			notebookView.showError("Note's date must have yyyy-MM-dd form.");
 			return false;
 		}
-		/*if (!GenericValidator.isDate(noteModified.getDate(), "yyyy/mm/dd", true)) {
-			notebookView.showError("Note's date must have yyyy/mm/dd form.");
-			return false;
-		}*/
 		if (notesRepository.findById(noteModified.getId()) != null) {
 			notebookView.showError(
 					"Change date and/or title. Already exist a note with the same attributes.");

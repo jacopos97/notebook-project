@@ -18,7 +18,6 @@
 		<mockito.version>5.4.0</mockito.version>
 		<mongo-driver.version>3.12.14</mongo-driver.version>
 		<logback.version>1.4.8</logback.version>
-		<!--<commons-validator.version>1.7</commons-validator.version>-->
 		<log4j.version>2.20.0</log4j.version>
 		<picocli.version>4.7.3</picocli.version>
 		<mysql-connector.version>8.0.26</mysql-connector.version>
@@ -93,11 +92,6 @@
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>commons-validator</groupId>
-			<artifactId>commons-validator</artifactId>
-			<version>${commons-validator.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
