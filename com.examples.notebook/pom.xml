@@ -43,13 +43,20 @@
 		<mysql.log>MySQL init process done. Ready for start up.</mysql.log>
 		<jvm.argLine>--add-opens java.base/java.util=ALL-UNNAMED</jvm.argLine>
 
-		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria>e11,e12</sonar.issue.ignore.multicriteria>
 		<sonar.issue.ignore.multicriteria.e11.ruleKey>
 			java:S2699
 		</sonar.issue.ignore.multicriteria.e11.ruleKey>
 		<sonar.issue.ignore.multicriteria.e11.resourceKey>
 			**/NotebookSwingViewTest.java
 		</sonar.issue.ignore.multicriteria.e11.resourceKey>
+		<sonar.issue.ignore.multicriteria.e12.ruleKey>
+			java:S2077
+		</sonar.issue.ignore.multicriteria.e12.ruleKey>
+		<sonar.issue.ignore.multicriteria.e12.resourceKey>
+			**/NotebookApp.java,
+			**/NotesMySqlRepository.java
+		</sonar.issue.ignore.multicriteria.e12.resourceKey>
 
 		<sonar.coverage.exclusions>
 			**/app/*.*,
