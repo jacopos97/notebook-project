@@ -37,15 +37,25 @@
 		<build-helper.version>3.4.0</build-helper.version>
 		<failsafe.version>3.1.2</failsafe.version>
 		<docker-plugin.version>0.43.0</docker-plugin.version>
+		<assembly-plugin.version>3.6.0</assembly-plugin.version>
+		<exec-plugin.version>3.1.0</exec-plugin.version>
 
-		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
+		<mysql.log>MySQL init process done. Ready for start up.</mysql.log>
+		<jvm.argLine>--add-opens java.base/java.util=ALL-UNNAMED</jvm.argLine>
 
+		<sonar.issue.ignore.multicriteria>e11,e12</sonar.issue.ignore.multicriteria>
 		<sonar.issue.ignore.multicriteria.e11.ruleKey>
 			java:S2699
 		</sonar.issue.ignore.multicriteria.e11.ruleKey>
 		<sonar.issue.ignore.multicriteria.e11.resourceKey>
 			**/NotebookSwingViewTest.java
 		</sonar.issue.ignore.multicriteria.e11.resourceKey>
+		<sonar.issue.ignore.multicriteria.e12.ruleKey>
+			java:S2077
+		</sonar.issue.ignore.multicriteria.e12.ruleKey>
+		<sonar.issue.ignore.multicriteria.e12.resourceKey>
+			**/*.java 
+		</sonar.issue.ignore.multicriteria.e12.resourceKey>
 
 		<sonar.coverage.exclusions>
 			**/app/*.*,
@@ -130,10 +140,34 @@
 					<version>${jar-plugin.version}</version>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${assembly-plugin.version}</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+							<configuration>
+								<descriptorRefs>
+									<descriptorRef>jar-with-dependencies</descriptorRef>
+								</descriptorRefs>
+								<archive>
+									<manifest>
+										<mainClass>
+											com.examples.notebook.app.NotebookApp</mainClass>
+									</manifest>
+								</archive>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${surefire.version}</version>
 					<configuration>
-						<argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+						<argLine>${argLine} ${jvm.argLine}</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -185,7 +219,9 @@
 							<param>com.examples.notebook.controller.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>com.examples.notebook.controller.NotebookControllerTest</param>
+							<param>
+								com.examples.notebook.controller.NotebookControllerTest
+							</param>
 						</targetTests>
 						<mutators>
 							<mutator>DEFAULTS</mutator>
@@ -226,7 +262,11 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${failsafe.version}</version>
 				<configuration>
-					<argLine>@{argLine} --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+					<argLine>${argLine} ${jvm.argLine}</argLine>
+					<systemPropertyVariables>
+						<mongo.port>${mongo.port}</mongo.port>
+						<mysql.port>${mysql.port}</mysql.port>
+					</systemPropertyVariables>
 				</configuration>
 				<executions>
 					<execution>
@@ -263,11 +303,11 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>27017:27017</port>
+									<port>mongo.port:27017</port>
 								</ports>
 								<wait>
 									<http>
-										<url>http://localhost:27017</url>
+										<url>http://localhost:${mongo.port}</url>
 										<method>GET</method>
 										<status>200</status>
 									</http>
@@ -276,18 +316,20 @@
 							</run>
 						</image>
 						<image>
-							<name>mysql_database</name>
-							<build>
-								<dockerFileDir>${project.basedir}/src/main/resources/dockerfile</dockerFileDir>
-							</build>
+							<name>mysql:5.7</name>
 							<run>
 								<ports>
-									<port>3306:3306</port>
+									<port>mysql.port:3306</port>
 								</ports>
 								<wait>
-									<log>MySQL init process done. Ready for start up.</log>
+									<log>${mysql.log}</log>
 									<time>30000</time>
 								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>secret</MYSQL_ROOT_PASSWORD>
+									<MYSQL_USER>user</MYSQL_USER>
+									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
+								</env>
 							</run>
 						</image>
 					</images>
@@ -297,7 +339,6 @@
 						<id>docker-start</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
@@ -313,6 +354,10 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

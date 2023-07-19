@@ -12,32 +12,62 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.examples.notebook.model.Note;
 
 public class NotesMySqlRepositoryIT {
 	
-	private static final String SELECT_ALL_NOTES = "select * from notebook.Notes";
-	private static final String SAVE_NOTE = "insert into notebook.Notes values (?, ?, ?, ?)";
+	private static final String DATABASE_NAME = "notebook";
+	private static final String COLLECTION_NAME = "notes";
+	private static final int port = Integer.parseInt(System.getProperty("mysql.port", "3306"));
+	private static final String url = "jdbc:mysql://localhost:" + port + "/";
+
+	private static final String CREATE_DATABASE_NOTEBOOK = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
+	private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " +
+														DATABASE_NAME +"." + COLLECTION_NAME +
+														"(NoteDate varchar(255), " +
+														"Title varchar(255), " +
+														"Body varchar(255), " +
+														"Id varchar(255), " +
+														"PRIMARY KEY (Id))";
+
+	private static final String SELECT_ALL_NOTES = "select * from " + COLLECTION_NAME;
+	private static final String SAVE_NOTE = "insert into " + COLLECTION_NAME + " values (?, ?, ?, ?)";
 	private static final String SQL_EXCEPTION_MESSAGE = "SQLException";
-	
-	private Connection connection;
+
+	private static Connection connection;
 	private NotesMySqlRepository notesMySqlRepository;
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(NotesMySqlRepositoryIT.class);
-	
-	@Before
-	public void setUp(){
+
+	@BeforeClass
+	public static void setUpServer() {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/notebook","user","password");
-			notesMySqlRepository = new NotesMySqlRepository(connection);
-			connection.createStatement().executeUpdate("truncate notebook.Notes");
+			connection = DriverManager.getConnection(url, "root", "secret");
+			var statement = connection.createStatement();
+			statement.executeUpdate(CREATE_DATABASE_NOTEBOOK);
+			statement.executeUpdate(CREATE_TABLE_NOTES);
+			statement.executeUpdate("GRANT ALL PRIVILEGES ON " + DATABASE_NAME + ".* TO 'user'@'%' IDENTIFIED BY 'password'");
+			connection.close();
+		} catch (Exception e) {
+			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
+		}
+	}
+
+	@Before
+	public void setUp() {
+		try {
+			connection = DriverManager.getConnection(url + DATABASE_NAME,"user","password");
+			notesMySqlRepository = new NotesMySqlRepository(connection, COLLECTION_NAME);
+			var statement = connection.createStatement();
+			statement.executeUpdate("truncate notes");
 		} catch (SQLException e) {
 			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 	}
-	
+
 	@After
 	public void tearDown() {
 		try {
@@ -46,59 +76,47 @@ public class NotesMySqlRepositoryIT {
 			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
 	}
-
 	
 	@Test
 	public void testFindAllWhenDatabaseIsEmpty() {
-		assertThat(notesMySqlRepository.findAll()).isEmpty();;
+		assertThat(notesMySqlRepository.findAll()).isEmpty();
 	}
-	
+
 	@Test
 	public void testFindAllWhenDatabaseIsNotEmpty() {
 		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
 		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
-		assertThat(notesMySqlRepository.findAll())
-			.containsExactly(
-				new Note("2000/01/01", "Title1", "Body1"),
+		assertThat(notesMySqlRepository.findAll()).containsExactly(new Note("2000/01/01", "Title1", "Body1"),
 				new Note("2000/01/02", "Title2", "Body2"));
 	}
-	
-	/*@Test
-	public void testFindAllWheConnectionFailedShouldThrow() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			notesMySqlRepository.findAll();
-		});
-	}*/
-	
+
 	@Test
 	public void testFindByIdNotFound() {
-		assertThat(notesMySqlRepository.findById("2000/01/01-Title"))
-			.isNull();
+		assertThat(notesMySqlRepository.findById("2000/01/01-Title")).isNull();
 	}
-	
+
 	@Test
 	public void testFindByIdFound() {
 		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
 		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
 		assertThat(notesMySqlRepository.findById("2000/01/02-Title2"))
-			.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
+				.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
 	}
-	
+
 	@Test
 	public void testSave() {
 		var note = new Note("2000/01/01", "Title", "Body");
 		notesMySqlRepository.save(note);
-		assertThat(readAllNotesFromDatabase())
-			.containsExactly(note);
+		assertThat(readAllNotesFromDatabase()).containsExactly(note);
 	}
-	
+
 	@Test
 	public void testDelete() {
 		addTestNoteToDatabase("2000/01/01", "Title", "Body");
 		notesMySqlRepository.delete("2000/01/01-Title");
 		assertThat(readAllNotesFromDatabase()).isEmpty();
 	}
-	
+
 	@Test
 	public void testModify() {
 		addTestNoteToDatabase("2000/01/01", "OldTitle", "OldBody");
@@ -112,7 +130,8 @@ public class NotesMySqlRepositoryIT {
 		try {
 			var tableRow = connection.prepareStatement(SELECT_ALL_NOTES).executeQuery();
 			while (tableRow.next())
-				noteList.add(new Note(tableRow.getString("NoteDate"), tableRow.getString("Title"), tableRow.getString("Body")));
+				noteList.add(new Note(tableRow.getString("NoteDate"), tableRow.getString("Title"),
+						tableRow.getString("Body")));
 		} catch (SQLException e) {
 			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
 		}
