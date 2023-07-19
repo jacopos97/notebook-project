@@ -59,7 +59,8 @@ public class NotebookApp implements Callable<Void> {
 							var url = "jdbc:mysql://localhost:" + port + "/";
 							configureDatabase(url);
 							notesRepository = new NotesMySqlRepository(
-									DriverManager.getConnection(url + databaseName, mysqlUser, mysqlUserPassword));
+									DriverManager.getConnection(url + databaseName, mysqlUser, mysqlUserPassword),
+									collectionName);
 						} else {
 							LOGGER.error(
 									"If you want to use a MySQL database, you must pass: root's password, user and user's password");
@@ -100,7 +101,7 @@ public class NotebookApp implements Callable<Void> {
 				var statement = connection.createStatement();) {
 			statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + databaseName);
 			var query = "CREATE TABLE IF NOT EXISTS " + databaseName +
-					".notes" + "(NoteDate varchar(255), " +
+					"." + collectionName + "(NoteDate varchar(255), " +
 					"Title varchar(255), " + "Body varchar(255), " +
 					"Id varchar(255), " + "PRIMARY KEY (Id))";
 			statement.executeUpdate(query);

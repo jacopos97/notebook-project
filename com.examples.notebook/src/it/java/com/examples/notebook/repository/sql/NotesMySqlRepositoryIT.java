@@ -20,20 +20,21 @@ import com.examples.notebook.model.Note;
 public class NotesMySqlRepositoryIT {
 	
 	private static final String DATABASE_NAME = "notebook";
+	private static final String COLLECTION_NAME = "notes";
 	private static final int port = Integer.parseInt(System.getProperty("mysql.port", "3306"));
 	private static final String url = "jdbc:mysql://localhost:" + port + "/";
 
 	private static final String CREATE_DATABASE_NOTEBOOK = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
 	private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " +
-														DATABASE_NAME +".notes" +
+														DATABASE_NAME +"." + COLLECTION_NAME +
 														"(NoteDate varchar(255), " +
 														"Title varchar(255), " +
 														"Body varchar(255), " +
 														"Id varchar(255), " +
 														"PRIMARY KEY (Id))";
 
-	private static final String SELECT_ALL_NOTES = "select * from notes";
-	private static final String SAVE_NOTE = "insert into notes values (?, ?, ?, ?)";
+	private static final String SELECT_ALL_NOTES = "select * from " + COLLECTION_NAME;
+	private static final String SAVE_NOTE = "insert into " + COLLECTION_NAME + " values (?, ?, ?, ?)";
 	private static final String SQL_EXCEPTION_MESSAGE = "SQLException";
 
 	private static Connection connection;
@@ -59,7 +60,7 @@ public class NotesMySqlRepositoryIT {
 	public void setUp() {
 		try {
 			connection = DriverManager.getConnection(url + DATABASE_NAME,"user","password");
-			notesMySqlRepository = new NotesMySqlRepository(connection);
+			notesMySqlRepository = new NotesMySqlRepository(connection, COLLECTION_NAME);
 			var statement = connection.createStatement();
 			statement.executeUpdate("truncate notes");
 		} catch (SQLException e) {

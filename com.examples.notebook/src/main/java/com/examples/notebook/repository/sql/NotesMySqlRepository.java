@@ -17,17 +17,19 @@ public class NotesMySqlRepository implements NotesRepository {
 	private static final String SQL_EXCEPTION_MESSAGE = "SQLException";
 
 	private Connection connectionDatabase;
+	private String tableName;
 
 	private static final Logger LOGGER = LogManager.getLogger(NotesMySqlRepository.class);
 
-	public NotesMySqlRepository(Connection connection) {
+	public NotesMySqlRepository(Connection connection, String tableName) {
 		this.connectionDatabase = connection;
+		this.tableName = tableName;
 	}
 
 	@Override
 	public List<Note> findAll(){
 		var noteList = new ArrayList<Note>();
-		var query = "select * from notes";
+		var query = "select * from " + tableName;
 		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			var tableRow = preparedStatement.executeQuery();
 			while (tableRow.next())
@@ -41,7 +43,7 @@ public class NotesMySqlRepository implements NotesRepository {
 	@Override
 	public Note findById(String id) {
 		Note note = null;
-		var query = "select * from notes where Id=?";
+		var query = "select * from " + tableName + " where Id=?";
 		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			preparedStatement.setString(1, id);
 			var tableRow = preparedStatement.executeQuery();
@@ -55,7 +57,7 @@ public class NotesMySqlRepository implements NotesRepository {
 
 	@Override
 	public void save(Note noteToAdd) {
-		var query = "insert into notes values (?, ?, ?, ?)";
+		var query = "insert into " + tableName + " values (?, ?, ?, ?)";
 		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			preparedStatement.setString(1, noteToAdd.getDate());
 			preparedStatement.setString(2, noteToAdd.getTitle());
@@ -69,7 +71,7 @@ public class NotesMySqlRepository implements NotesRepository {
 
 	@Override
 	public void delete(String idNoteToDelete) {
-		var query = "delete from notes where Id=?";
+		var query = "delete from " + tableName + " where Id=?";
 		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			preparedStatement.setString(1, idNoteToDelete);
 			preparedStatement.executeUpdate();
@@ -81,7 +83,7 @@ public class NotesMySqlRepository implements NotesRepository {
 
 	@Override
 	public void modify(String idNoteToModify, Note noteModified) {
-		var query = "update notes set NoteDate=?, Title=?, Body=?, Id=? where Id=?";
+		var query = "update " + tableName + " set NoteDate=?, Title=?, Body=?, Id=? where Id=?";
 		try (var preparedStatement = connectionDatabase.prepareStatement(query)) {
 			preparedStatement.setString(1, noteModified.getDate());
 			preparedStatement.setString(2, noteModified.getTitle());
