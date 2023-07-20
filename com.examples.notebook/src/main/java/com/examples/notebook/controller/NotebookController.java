@@ -44,7 +44,8 @@ public class NotebookController {
 			return;
 		}
 		if (checkDateValidity(noteModified)) {
-			if (!idNoteToModify.equals(noteModified.getId()) && !checkIdValidity(noteModified)) {
+			if (!idNoteToModify.equals(noteModified.getId()) &&
+					!checkIdValidity(noteModified)) {
 				return;
 			}
 			notesRepository.modify(idNoteToModify, noteModified);

@@ -84,7 +84,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.textBox("body").enterText("Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
-		window.label("errorMessageLabel").requireText("Note's date must have yyyy-MM-dd form and must be valid.");
+		window.label("errorMessageLabel").requireText(
+				"Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
@@ -97,7 +98,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel")
-				.requireText("Change date and/or title. Already exist a note with the same attributes.");
+				.requireText(
+						"Change date and/or title. Already exist a note with the same attributes.");
 	}
 
 	@Test
@@ -134,7 +136,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents())
-				.containsExactly(new Note("2000-01-02", "NewTitle", "NewBody").toString());
+				.containsExactly(
+						new Note("2000-01-02", "NewTitle", "NewBody").toString());
 	}
 
 	@Test
@@ -150,7 +153,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents()).containsExactly(note.toString());
 		window.label("errorMessageLabel")
-				.requireText("Note's date must have yyyy-MM-dd form and must be valid.");
+				.requireText(
+						"Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
@@ -169,7 +173,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents()).containsExactly(note1.toString(), note2.toString());
 		window.label("errorMessageLabel")
-				.requireText("Change date and/or title. Already exist a note with the same attributes.");
+				.requireText(
+						"Change date and/or title. Already exist a note with the same attributes.");
 	}
 
 }
