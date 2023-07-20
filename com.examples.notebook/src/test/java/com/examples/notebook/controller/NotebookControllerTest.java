@@ -79,7 +79,7 @@ public class NotebookControllerTest {
 		var note = new Note("2000-01-051", "Title", "Body");
 		notebookController.addNote(note);
 		verify(notebookView)
-				.showError("Note's date must have yyyy-MM-dd form.");
+				.showError("Note's date must have yyyy-MM-dd form and must be valid.");
 		verifyNoMoreInteractions(notesRepository);
 	}
 
@@ -133,6 +133,19 @@ public class NotebookControllerTest {
 				.showError("Change date and/or title. Already exist a note with the same attributes.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
+	
+	@Test
+	public void testModifyNoteWhenNoteDoesNotChangeId() {
+		var noteToModify = new Note("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2000-01-01", "OldTitle", "NewBody");
+		when(notesRepository.findById("2000-01-01" + "_" + "OldTitle"))
+				.thenReturn(noteToModify);
+		notebookController.modifyNote(noteToModify.getId(), noteModified);
+		InOrder inOrder = inOrder(notesRepository, notebookView);
+		inOrder.verify(notesRepository).modify("2000-01-01_OldTitle", noteModified);
+		inOrder.verify(notebookView).noteModified(noteModified);
+		inOrder.verifyNoMoreInteractions();
+	}
 
 	@Test
 	public void testModifyNoteWhenNoteDoesNotExist() {
@@ -154,7 +167,7 @@ public class NotebookControllerTest {
 				.thenReturn(noteToModify);
 		notebookController.modifyNote("2000-01-01_OldTitle", noteModified);
 		verify(notebookView)
-				.showError("Note's date must have yyyy-MM-dd form.");
+				.showError("Note's date must have yyyy-MM-dd form and must be valid.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 

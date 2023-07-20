@@ -107,7 +107,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 		window.textBox("body").enterText("Some Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.label("errorMessageLabel").text())
-				.contains("Note's date must have yyyy-MM-dd form.");
+				.contains("Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
@@ -182,7 +182,7 @@ public class NotebookAppE2E extends AssertJSwingJUnitTestCase {
 		window.textBox("body").deleteText().enterText("Some Body");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.label("errorMessageLabel").text())
-				.contains("Note's date must have yyyy-MM-dd form.");
+				.contains("Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	private void addTestNoteToDatabase(String date, String title, String body) {

@@ -84,7 +84,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.textBox("body").enterText("Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
-		window.label("errorMessageLabel").requireText("Note's date must have yyyy-MM-dd form.");
+		window.label("errorMessageLabel").requireText("Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
@@ -150,7 +150,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents()).containsExactly(note.toString());
 		window.label("errorMessageLabel")
-				.requireText("Note's date must have yyyy-MM-dd form.");
+				.requireText("Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test

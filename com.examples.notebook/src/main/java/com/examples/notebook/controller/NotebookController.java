@@ -21,7 +21,7 @@ public class NotebookController {
 	}
 
 	public void addNote(Note noteToAdd) {
-		if (checkNoteValidity(noteToAdd)) {
+		if (checkDateValidity(noteToAdd) && checkIdValidity(noteToAdd)) {
 			notesRepository.save(noteToAdd);
 			notebookView.noteAdded(noteToAdd);
 		}
@@ -43,19 +43,26 @@ public class NotebookController {
 					"No existing note with id " + idNoteToModify);
 			return;
 		}
-		if (checkNoteValidity(noteModified)) {
+		if (checkDateValidity(noteModified)) {
+			if (!idNoteToModify.equals(noteModified.getId()) && !checkIdValidity(noteModified)) {
+				return;
+			}
 			notesRepository.modify(idNoteToModify, noteModified);
 			notebookView.noteModified(noteModified);
 		}
 	}
-
-	private boolean checkNoteValidity(Note noteModified) {
+	
+	private boolean checkDateValidity(Note noteModified) {
 		try {
 			LocalDate.parse(noteModified.getDate());
 		} catch (Exception e) {
-			notebookView.showError("Note's date must have yyyy-MM-dd form.");
+			notebookView.showError("Note's date must have yyyy-MM-dd form and must be valid.");
 			return false;
 		}
+		return true;
+	}
+	
+	private boolean checkIdValidity(Note noteModified) {
 		if (notesRepository.findById(noteModified.getId()) != null) {
 			notebookView.showError(
 					"Change date and/or title. Already exist a note with the same attributes.");

@@ -55,7 +55,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.textBox("date").requireEnabled();
 		window.label(JLabelMatcher.withText("Title"));
 		window.textBox("title").requireEnabled();
-		window.label(JLabelMatcher.withText("Note"));
+		window.label(JLabelMatcher.withText("Body"));
 		window.textBox("body").requireEnabled();
 		window.label(JLabelMatcher.withText("Note List"));
 		window.list("noteList");
@@ -67,19 +67,20 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testWhenDateAndTitleAreNonEmptyAndNoElementFromTheListIsSelectedThenAddButtonShouldBeEnabled() {
+	public void testWhenDateAndTitleAreNotEmptyAndNoElementFromTheListIsSelectedThenAddButtonShouldBeEnabled() {
 		window.textBox("date").enterText("2000-01-01");
 		window.textBox("title").enterText("Title");
 		window.button(JButtonMatcher.withText("Add")).requireEnabled();
 	}
 
 	@Test
-	public void testWhenDateAndTitleAreNotEmptyAndAnElementFromTheListIsSelectedThenAddButtonShouldBeDisabled() {
+	public void testWhenAnElementFromTheListIsSelectedThenAddButtonShouldBeDisabled() {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
 		window.button(JButtonMatcher.withText("Add")).requireDisabled();
 	}
+	
 	@Test
 	public void testWhenEitherDateOrTitleAreBlankThenAddButtonShouldBeDisabled() {
 		var date = window.textBox("date");
@@ -113,14 +114,22 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
-		window.textBox("date").deleteText().enterText("2000-01-02");
+		window.textBox("date").deleteText().enterText("2000-01-02");		
+		window.button(JButtonMatcher.withText("Modify")).requireEnabled();
+		
+		GuiActionRunner.execute(
+				() -> notebookSwingView.getBtnModify().setEnabled(false));
 		window.textBox("title").deleteText().enterText("NewTitle");
+		window.button(JButtonMatcher.withText("Modify")).requireEnabled();
+		
+		GuiActionRunner.execute(
+				() -> notebookSwingView.getBtnModify().setEnabled(false));
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).requireEnabled();
 	}
 
 	@Test
-	public void testDateTextAndTitleTextAndNoteTextShouldBeShownOnlyWhenANoteIsSelected() {
+	public void testDateTextAndTitleTextAndBodyTextShouldBeShownOnlyWhenANoteIsSelected() {
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
@@ -154,7 +163,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testListSelectionShouldClearErrorLabel() {
+	public void testListSelectionShouldResetErrorLabel() {
 		GuiActionRunner.execute(() -> {
 			var errorLabel = notebookSwingView.getLblError();
 			errorLabel.setText("error");

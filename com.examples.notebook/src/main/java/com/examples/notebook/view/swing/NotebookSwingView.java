@@ -58,6 +58,10 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		return lblError;
 	}
 
+	JButton getBtnModify() {
+		return btnModify;
+	}
+
 	public void setNotebookController(NotebookController notebookController) {
 		this.notebookController = notebookController;
 	}
@@ -131,7 +135,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		gbcLblTitolo.gridy = 1;
 		contentPane.add(lblTitolo, gbcLblTitolo);
 
-		JLabel lblNota = new JLabel("Note");
+		JLabel lblNota = new JLabel("Body");
 		GridBagConstraints gbcLblNota = new GridBagConstraints();
 		gbcLblNota.anchor = GridBagConstraints.WEST;
 		gbcLblNota.insets = new Insets(0, 0, 5, 5);
@@ -148,11 +152,6 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		gbcScrollPaneNote.gridy = 4;
 		contentPane.add(scrollPaneNote, gbcScrollPaneNote);
 
-		textBody = new JTextArea();
-		scrollPaneNote.setViewportView(textBody);
-		textBody.setLineWrap(true);
-		textBody.setName("body");
-
 		btnNew = new JButton("New");
 		btnNew.addActionListener( e -> {
 			textDate.setText("");
@@ -168,19 +167,19 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		contentPane.add(btnNew, gbcBtnNew);
 
 		btnModify = new JButton("Modify");
-		btnModify.addActionListener(e -> {
+		getBtnModify().addActionListener(e -> {
 			notebookController.modifyNote(
 				listNotes.getSelectedValue().getId(),
 				new Note(textDate.getText(), textTitle.getText(), textBody.getText()));
-			btnModify.setEnabled(false);
+			getBtnModify().setEnabled(false);
 		});
-		btnModify.setEnabled(false);
+		getBtnModify().setEnabled(false);
 		GridBagConstraints gbcBtnModify = new GridBagConstraints();
 		gbcBtnModify.anchor = GridBagConstraints.EAST;
 		gbcBtnModify.insets = new Insets(0, 0, 5, 5);
 		gbcBtnModify.gridx = 3;
 		gbcBtnModify.gridy = 5;
-		contentPane.add(btnModify, gbcBtnModify);
+		contentPane.add(getBtnModify(), gbcBtnModify);
 
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(
@@ -224,11 +223,23 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		KeyAdapter btnAddEnabler = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				btnAdd.setEnabled(!textDate.getText().trim().isEmpty() && !textTitle.getText().trim().isEmpty() && listNotes.isSelectionEmpty());
-				btnModify.setEnabled(!textDate.getText().trim().isEmpty() && !textTitle.getText().trim().isEmpty() && !listNotes.isSelectionEmpty());
+				btnAdd.setEnabled(
+						!textDate.getText().trim().isEmpty() &&
+						!textTitle.getText().trim().isEmpty() &&
+						listNotes.isSelectionEmpty());
+			}
+		};
+		KeyAdapter btnModifyEnabler = new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				getBtnModify().setEnabled(
+						!textDate.getText().trim().isEmpty() &&
+						!textTitle.getText().trim().isEmpty() &&
+						!listNotes.isSelectionEmpty());
 			}
 		};
 		textDate.addKeyListener(btnAddEnabler);
+		textDate.addKeyListener(btnModifyEnabler);
 		textDate.setName("date");
 		GridBagConstraints gbcTextFieldDate = new GridBagConstraints();
 		gbcTextFieldDate.fill = GridBagConstraints.HORIZONTAL;
@@ -240,6 +251,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 
 		textTitle = new JTextField();
 		textTitle.addKeyListener(btnAddEnabler);
+		textTitle.addKeyListener(btnModifyEnabler);
 		textTitle.setName("title");
 		GridBagConstraints gbcTextFieldTitle = new GridBagConstraints();
 		gbcTextFieldTitle.gridwidth = 3;
@@ -249,6 +261,12 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		gbcTextFieldTitle.gridy = 2;
 		contentPane.add(textTitle, gbcTextFieldTitle);
 		textTitle.setColumns(10);
+		
+		textBody = new JTextArea();
+		scrollPaneNote.setViewportView(textBody);
+		textBody.addKeyListener(btnModifyEnabler);
+		textBody.setLineWrap(true);
+		textBody.setName("body");
 	}
 
 	@Override
