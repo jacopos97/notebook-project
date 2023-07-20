@@ -58,8 +58,8 @@
 
 		<sonar.coverage.exclusions>
 			**/app/*.*,
-			**/model/*.*,
-			**/sql/*.*
+			**/model/*.*
+			<!--**/sql/*.*-->
 		</sonar.coverage.exclusions>
 	</properties>
 
@@ -180,7 +180,7 @@
 						<excludes>
 							<exclude>**/Note.*</exclude>
 							<exclude>**/app/*.*</exclude>
-							<exclude>**/NotesMySqlRepository.*</exclude>
+							<!--<exclude>**/NotesMySqlRepository.*</exclude>-->
 						</excludes>
 					</configuration>
 					<executions>
