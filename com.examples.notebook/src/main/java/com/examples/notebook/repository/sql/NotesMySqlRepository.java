@@ -14,8 +14,6 @@ import com.examples.notebook.model.Note;
 import com.examples.notebook.repository.NotesRepository;
 
 public class NotesMySqlRepository implements NotesRepository {
-	
-	private static final String SQL_EXCEPTION_MESSAGE = "SQLException";
 
 	private Connection connectionDatabase;
 	private String tableName;
@@ -91,14 +89,21 @@ public class NotesMySqlRepository implements NotesRepository {
 		return new Note(row.getString("NoteDate"), row.getString("Title"), row.getString("Body"));
 	}
 	
-	private void manageSqlConnection(ConnectionAction action, String query) {
-		try (PreparedStatement preparedStatement = connectionDatabase.prepareStatement(query)){
+	void manageSqlConnection(ConnectionAction action, String query) {
+		try (PreparedStatement preparedStatement = getConnectionDatabase().prepareStatement(query)){
 			action.execute(preparedStatement);
 		} catch (SQLException e) {
-			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);
+			LOGGER.error("SQL Exception is occurred!!!", e);			
+			LOGGER.error("SQL Exception has error code " + String.valueOf(e.getErrorCode()));
+			LOGGER.error(e.getSQLState());
+			connectionDatabase = null;
 		}
 	}
 	
+	public Connection getConnectionDatabase() {
+		return connectionDatabase;
+	}
+
 	@FunctionalInterface
 	interface ConnectionAction{
 			void execute(PreparedStatement preparedStatement) throws SQLException;

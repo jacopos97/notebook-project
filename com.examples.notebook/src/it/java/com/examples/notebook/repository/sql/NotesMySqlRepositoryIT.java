@@ -124,6 +124,16 @@ public class NotesMySqlRepositoryIT {
 		notesMySqlRepository.modify("2000-01-01_OldTitle", noteModified);
 		assertThat(readAllNotesFromDatabase()).containsExactly(noteModified);
 	}
+	
+	@Test
+	public void testManageSqlConnectionWhenExceptionIsThrown() {
+		var wrongTable = "notttes";
+		var wrongQuery = "select * from " + wrongTable;
+		notesMySqlRepository.manageSqlConnection(preparedStatement -> {
+			preparedStatement.executeQuery();
+		}, wrongQuery);
+		assertThat(notesMySqlRepository.getConnectionDatabase()).isNull();
+	}
 
 	private List<Note> readAllNotesFromDatabase() {
 		var noteList = new ArrayList<Note>();
