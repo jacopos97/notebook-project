@@ -179,7 +179,6 @@
 						<excludes>
 							<exclude>**/Note.*</exclude>
 							<exclude>**/app/*.*</exclude>
-							<!--<exclude>**/NotesMySqlRepository.*</exclude>-->
 						</excludes>
 					</configuration>
 					<executions>
@@ -256,10 +255,6 @@
 				<version>${failsafe.version}</version>
 				<configuration>
 					<argLine>${argLine} ${jvm.argLine}</argLine>
-					<systemPropertyVariables>
-						<mongo.port>${mongo.port}</mongo.port>
-						<mysql.port>${mysql.port}</mysql.port>
-					</systemPropertyVariables>
 				</configuration>
 				<executions>
 					<execution>
@@ -296,11 +291,11 @@
 							<name>mongo:4.4.3</name>
 							<run>
 								<ports>
-									<port>mongo.port:27017</port>
+									<port>27017:27017</port>
 								</ports>
 								<wait>
 									<http>
-										<url>http://localhost:${mongo.port}</url>
+										<url>http://localhost:27017</url>
 										<method>GET</method>
 										<status>200</status>
 									</http>
@@ -312,7 +307,7 @@
 							<name>mysql:5.7</name>
 							<run>
 								<ports>
-									<port>mysql.port:3306</port>
+									<port>3306:3306</port>
 								</ports>
 								<wait>
 									<log>${mysql.log}</log>
