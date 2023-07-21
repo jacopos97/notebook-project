@@ -59,7 +59,6 @@
 		<sonar.coverage.exclusions>
 			**/app/*.*,
 			**/model/*.*
-			<!--**/sql/*.*-->
 		</sonar.coverage.exclusions>
 	</properties>
 

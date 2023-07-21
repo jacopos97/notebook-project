@@ -30,10 +30,10 @@ public class NotesMySqlRepository implements NotesRepository {
 		var noteList = new ArrayList<Note>();
 		var query = "select * from " + tableName;
 		manageSqlConnection(preparedStatement -> {
-			var tableRow = preparedStatement.executeQuery();
-			while (tableRow.next())
-				noteList.add(fromRowElementToNote(tableRow));
-		}, query);
+				var tableRow = preparedStatement.executeQuery();
+				while (tableRow.next())
+					noteList.add(fromRowElementToNote(tableRow));
+			}, query);
 		return noteList;
 	}
 
@@ -43,11 +43,11 @@ public class NotesMySqlRepository implements NotesRepository {
 		var noteWrapper = new Note[arrayLength];
 		var query = "select * from " + tableName + " where Id=?";
 		manageSqlConnection(preparedStatement -> {
-			preparedStatement.setString(1, id);
-			var tableRow = preparedStatement.executeQuery();
-			if (tableRow.next())
-				noteWrapper[arrayLength - 1] = fromRowElementToNote(tableRow);
-		}, query);
+				preparedStatement.setString(1, id);
+				var tableRow = preparedStatement.executeQuery();
+				if (tableRow.next())
+					noteWrapper[arrayLength - 1] = fromRowElementToNote(tableRow);
+			}, query);
 		return noteWrapper[arrayLength - 1];
 	}
 
@@ -55,34 +55,34 @@ public class NotesMySqlRepository implements NotesRepository {
 	public void save(Note noteToAdd) {
 		var query = "insert into " + tableName + " values (?, ?, ?, ?)";
 		manageSqlConnection(preparedStatement -> {
-			preparedStatement.setString(1, noteToAdd.getDate());
-			preparedStatement.setString(2, noteToAdd.getTitle());
-			preparedStatement.setString(3, noteToAdd.getBody());
-			preparedStatement.setString(4, noteToAdd.getId());
-			preparedStatement.executeUpdate();
-		}, query);
+				preparedStatement.setString(1, noteToAdd.getDate());
+				preparedStatement.setString(2, noteToAdd.getTitle());
+				preparedStatement.setString(3, noteToAdd.getBody());
+				preparedStatement.setString(4, noteToAdd.getId());
+				preparedStatement.executeUpdate();
+			}, query);
 	}
 
 	@Override
 	public void delete(String idNoteToDelete) {
 		var query = "delete from " + tableName + " where Id=?";
 		manageSqlConnection(preparedStatement -> {
-			preparedStatement.setString(1, idNoteToDelete);
-			preparedStatement.executeUpdate();
-		}, query);
+				preparedStatement.setString(1, idNoteToDelete);
+				preparedStatement.executeUpdate();
+			}, query);
 	}
 
 	@Override
 	public void modify(String idNoteToModify, Note noteModified) {
 		var query = "update " + tableName + " set NoteDate=?, Title=?, Body=?, Id=? where Id=?";
 		manageSqlConnection(preparedStatement -> {
-			preparedStatement.setString(1, noteModified.getDate());
-			preparedStatement.setString(2, noteModified.getTitle());
-			preparedStatement.setString(3, noteModified.getBody());
-			preparedStatement.setString(4, noteModified.getId());
-			preparedStatement.setString(5, idNoteToModify);
-			preparedStatement.executeUpdate();
-		}, query);
+				preparedStatement.setString(1, noteModified.getDate());
+				preparedStatement.setString(2, noteModified.getTitle());
+				preparedStatement.setString(3, noteModified.getBody());
+				preparedStatement.setString(4, noteModified.getId());
+				preparedStatement.setString(5, idNoteToModify);
+				preparedStatement.executeUpdate();
+			}, query);
 	}
 
 	private Note fromRowElementToNote(ResultSet row) throws SQLException {
@@ -94,7 +94,7 @@ public class NotesMySqlRepository implements NotesRepository {
 			action.execute(preparedStatement);
 		} catch (SQLException e) {
 			LOGGER.error("SQL Exception is occurred!!!", e);			
-			LOGGER.error("SQL Exception has error code " + String.valueOf(e.getErrorCode()));
+			LOGGER.error(String.format("SQL Exception has error code %d" , e.getErrorCode()));
 			LOGGER.error(e.getSQLState());
 			connectionDatabase = null;
 		}
