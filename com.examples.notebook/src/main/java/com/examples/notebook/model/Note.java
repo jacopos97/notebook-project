@@ -13,7 +13,7 @@ public class Note {
 		this.date = date;
 		this.title = title;
 		this.body = body;
-		this.id = this.date + "-" + this.title;
+		this.id = this.date + "_" + this.title;
 	}
 
 	public String getId() {

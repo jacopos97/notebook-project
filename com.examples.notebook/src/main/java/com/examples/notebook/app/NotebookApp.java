@@ -32,13 +32,13 @@ public class NotebookApp implements Callable<Void> {
 			"--mysql-db" }, description = "Database type. true for MySQL, false for MongoDB")
 	private boolean mysqlDB = false;
 
-	@Option(names = { "--mysql-root-password" }, description = "MySQL root password")
+	@Option(names = { "--mysql-root-pw" }, description = "MySQL root password")
 	private String mysqlRootPassword = null;
 
 	@Option(names = { "--mysql-user" }, description = "MySQL user")
 	private String mysqlUser = null;
 
-	@Option(names = { "--mysql-user-password" }, description = "MySQL user password")
+	@Option(names = { "--mysql-user-pw" }, description = "MySQL user password")
 	private String mysqlUserPassword = null;
 
 	private static final Logger LOGGER = LogManager.getLogger(NotebookApp.class);

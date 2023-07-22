@@ -84,45 +84,55 @@ public class NotesMySqlRepositoryIT {
 
 	@Test
 	public void testFindAllWhenDatabaseIsNotEmpty() {
-		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
-		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
-		assertThat(notesMySqlRepository.findAll()).containsExactly(new Note("2000/01/01", "Title1", "Body1"),
-				new Note("2000/01/02", "Title2", "Body2"));
+		addTestNoteToDatabase("2000-01-01", "Title1", "Body1");
+		addTestNoteToDatabase("2000-01-02", "Title2", "Body2");
+		assertThat(notesMySqlRepository.findAll()).containsExactly(new Note("2000-01-01", "Title1", "Body1"),
+				new Note("2000-01-02", "Title2", "Body2"));
 	}
 
 	@Test
 	public void testFindByIdNotFound() {
-		assertThat(notesMySqlRepository.findById("2000/01/01-Title")).isNull();
+		assertThat(notesMySqlRepository.findById("2000-01-01_Title")).isNull();
 	}
 
 	@Test
 	public void testFindByIdFound() {
-		addTestNoteToDatabase("2000/01/01", "Title1", "Body1");
-		addTestNoteToDatabase("2000/01/02", "Title2", "Body2");
-		assertThat(notesMySqlRepository.findById("2000/01/02-Title2"))
-				.isEqualTo(new Note("2000/01/02", "Title2", "Body2"));
+		addTestNoteToDatabase("2000-01-01", "Title1", "Body1");
+		addTestNoteToDatabase("2000-01-02", "Title2", "Body2");
+		assertThat(notesMySqlRepository.findById("2000-01-02_Title2"))
+				.isEqualTo(new Note("2000-01-02", "Title2", "Body2"));
 	}
 
 	@Test
 	public void testSave() {
-		var note = new Note("2000/01/01", "Title", "Body");
+		var note = new Note("2000-01-01", "Title", "Body");
 		notesMySqlRepository.save(note);
 		assertThat(readAllNotesFromDatabase()).containsExactly(note);
 	}
 
 	@Test
 	public void testDelete() {
-		addTestNoteToDatabase("2000/01/01", "Title", "Body");
-		notesMySqlRepository.delete("2000/01/01-Title");
+		addTestNoteToDatabase("2000-01-01", "Title", "Body");
+		notesMySqlRepository.delete("2000-01-01_Title");
 		assertThat(readAllNotesFromDatabase()).isEmpty();
 	}
 
 	@Test
 	public void testModify() {
-		addTestNoteToDatabase("2000/01/01", "OldTitle", "OldBody");
-		var noteModified = new Note("2001/02/02", "NewTitle", "NewBody");
-		notesMySqlRepository.modify("2000/01/01-OldTitle", noteModified);
+		addTestNoteToDatabase("2000-01-01", "OldTitle", "OldBody");
+		var noteModified = new Note("2001-02-02", "NewTitle", "NewBody");
+		notesMySqlRepository.modify("2000-01-01_OldTitle", noteModified);
 		assertThat(readAllNotesFromDatabase()).containsExactly(noteModified);
+	}
+	
+	@Test
+	public void testManageSqlConnectionWhenExceptionIsThrown() {
+		var wrongTable = "notttes";
+		var wrongQuery = "select * from " + wrongTable;
+		notesMySqlRepository.manageSqlConnection(preparedStatement -> {
+			preparedStatement.executeQuery();
+		}, wrongQuery);
+		assertThat(notesMySqlRepository.getConnectionDatabase()).isNull();
 	}
 
 	private List<Note> readAllNotesFromDatabase() {
@@ -144,7 +154,7 @@ public class NotesMySqlRepositoryIT {
 			preparedStatement.setString(1, date);
 			preparedStatement.setString(2, title);
 			preparedStatement.setString(3, body);
-			preparedStatement.setString(4, date + "-" + title);
+			preparedStatement.setString(4, date + "_" + title);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			LOGGER.error(SQL_EXCEPTION_MESSAGE, e);

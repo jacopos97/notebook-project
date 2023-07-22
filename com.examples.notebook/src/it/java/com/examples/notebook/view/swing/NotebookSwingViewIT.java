@@ -57,8 +57,8 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testGetAllNotes() {
-		var note1 = new Note("2000/01/01", "Title1", "Body1");
-		var note2 = new Note("2000/01/02", "Title2", "Body2");
+		var note1 = new Note("2000-01-01", "Title1", "Body1");
+		var note2 = new Note("2000-01-02", "Title2", "Body2");
 		notesRepository.save(note1);
 		notesRepository.save(note2);
 		GuiActionRunner.execute(() -> notebookController.getAllNotes());
@@ -68,43 +68,45 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddButtonSuccess() {
-		window.textBox("date").enterText("2000/01/01");
+		window.textBox("date").enterText("2000-01-01");
 		window.textBox("title").enterText("Title");
 		window.textBox("body").enterText("Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents())
-				.containsExactly(new Note("2000/01/01", "Title", "Body").toString());
+				.containsExactly(new Note("2000-01-01", "Title", "Body").toString());
 	}
 
 	@Test
 	@GUITest
 	public void testAddButtonErrorCausedByANotValidDate() {
-		window.textBox("date").enterText("20004/01/051");
+		window.textBox("date").enterText("20004-01-051");
 		window.textBox("title").enterText("Title");
 		window.textBox("body").enterText("Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
-		window.label("errorMessageLabel").requireText("Note's date must have yyyy/mm/dd form.");
+		window.label("errorMessageLabel").requireText(
+				"Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
 	@GUITest
 	public void testAddButtonErrorCausedByAnAlreadyExistentId() {
-		notesRepository.save(new Note("2000/01/01", "Title", "Body"));
-		window.textBox("date").enterText("2000/01/01");
+		notesRepository.save(new Note("2000-01-01", "Title", "Body"));
+		window.textBox("date").enterText("2000-01-01");
 		window.textBox("title").enterText("Title");
 		window.textBox("body").enterText("Body");
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel")
-				.requireText("Change date and/or title. Already exist a note with the same attributes.");
+				.requireText(
+						"Change date and/or title. Already exist a note with the same attributes.");
 	}
 
 	@Test
 	@GUITest
 	public void testDeleteButtonSuccess() {
 		GuiActionRunner.execute(
-				() -> notebookController.addNote(new Note("2000/01/01", "Title", "Body")));
+				() -> notebookController.addNote(new Note("2000-01-01", "Title", "Body")));
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete")).click();
 		assertThat(window.list().contents()).isEmpty();
@@ -113,7 +115,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testDeleteButtonError() {
-		var note = new Note("2000/01/01", "Title", "Body");
+		var note = new Note("2000-01-01", "Title", "Body");
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(note));
 		window.list().selectItem(0);
@@ -127,49 +129,52 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 	@GUITest
 	public void testModifyButtonSuccess() {
 		GuiActionRunner.execute(
-				() -> notebookController.addNote(new Note("2000/01/01", "Title", "Body")));
+				() -> notebookController.addNote(new Note("2000-01-01", "Title", "Body")));
 		window.list().selectItem(0);
-		window.textBox("date").deleteText().enterText("2000/01/02");
+		window.textBox("date").deleteText().enterText("2000-01-02");
 		window.textBox("title").deleteText().enterText("NewTitle");
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents())
-				.containsExactly(new Note("2000/01/02", "NewTitle", "NewBody").toString());
+				.containsExactly(
+						new Note("2000-01-02", "NewTitle", "NewBody").toString());
 	}
 
 	@Test
 	@GUITest
 	public void testModifyButtonErrorCausedByANotValidDate() {
-		var note = new Note("2000/01/01", "Title", "Body");
+		var note = new Note("2000-01-01", "Title", "Body");
 		GuiActionRunner.execute(
 				() -> notebookController.addNote(note));
 		window.list().selectItem(0);
-		window.textBox("date").deleteText().enterText("20004/01/051");
+		window.textBox("date").deleteText().enterText("20004-01-051");
 		window.textBox("title").deleteText().enterText("NewTitle");
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents()).containsExactly(note.toString());
 		window.label("errorMessageLabel")
-				.requireText("Note's date must have yyyy/mm/dd form.");
+				.requireText(
+						"Note's date must have yyyy-MM-dd form and must be valid.");
 	}
 
 	@Test
 	@GUITest
 	public void testModifyButtonErrorCausedByAnAlreadyExistentId() {
-		var note1 = new Note("2000/01/01", "Title1", "Body1");
-		var note2 = new Note("2000/01/02", "Title2", "Body2");
+		var note1 = new Note("2000-01-01", "Title1", "Body1");
+		var note2 = new Note("2000-01-02", "Title2", "Body2");
 		GuiActionRunner.execute(() -> {
 			notebookController.addNote(note1);
 			notebookController.addNote(note2);
 		});
 		window.list().selectItem(0);
-		window.textBox("date").deleteText().enterText("2000/01/02");
+		window.textBox("date").deleteText().enterText("2000-01-02");
 		window.textBox("title").deleteText().enterText("Title2");
 		window.textBox("body").deleteText().enterText("NewBody");
 		window.button(JButtonMatcher.withText("Modify")).click();
 		assertThat(window.list().contents()).containsExactly(note1.toString(), note2.toString());
 		window.label("errorMessageLabel")
-				.requireText("Change date and/or title. Already exist a note with the same attributes.");
+				.requireText(
+						"Change date and/or title. Already exist a note with the same attributes.");
 	}
 
 }
