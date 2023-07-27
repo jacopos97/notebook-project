@@ -164,10 +164,9 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	public void testListSelectionShouldResetErrorLabel() {
-		GuiActionRunner.execute(() -> {
-			var errorLabel = notebookSwingView.getLblError();
-			errorLabel.setText("error");
-		});
+		GuiActionRunner.execute(
+				() -> notebookSwingView.getLblError().setText("error")
+		);
 		GuiActionRunner.execute(
 				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body")));
 		window.list("noteList").selectItem(0);
@@ -178,8 +177,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void testNoteAddedShouldAddTheNoteToTheListAndResetTheErrorLabel() {
 		var note = new Note("2000-01-01", "Title", "Body");
 		GuiActionRunner.execute(() -> {
-			var errorLabel = notebookSwingView.getLblError();
-			errorLabel.setText("error");
+			notebookSwingView.getLblError().setText("error");
 		});
 		GuiActionRunner.execute(
 				() -> notebookSwingView.noteAdded(new Note("2000-01-01", "Title", "Body")));
@@ -196,8 +194,7 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 			var listNotesModel = notebookSwingView.getListNotesModel();
 			listNotesModel.addElement(note1);
 			listNotesModel.addElement(note2);
-			var errorLabel = notebookSwingView.getLblError();
-			errorLabel.setText("error");
+			notebookSwingView.getLblError().setText("error");
 		});
 		GuiActionRunner.execute(
 				() -> notebookSwingView.noteRemoved(new Note("2000-01-01", "Title1", "Body1"))
@@ -213,10 +210,8 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 		var newNote = new Note("2000-01-02", "NewTitle", "NewBody");
 		GuiActionRunner.execute(() -> {
 			notebookSwingView.getListNotesModel().addElement(oldNote);
-			var listNotes = notebookSwingView.getListNotes();
-			listNotes.setSelectedValue(oldNote, false);
-			var errorLabel = notebookSwingView.getLblError();
-			errorLabel.setText("error");
+			notebookSwingView.getListNotes().setSelectedValue(oldNote, false);
+			notebookSwingView.getLblError().setText("error");
 		});
 		GuiActionRunner.execute(
 				() -> notebookSwingView.noteModified(newNote));
@@ -288,15 +283,20 @@ public class NotebookSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
-	public void testNewButtonShouldClearTextBoxesAndDeselectNoteFromTheListWhenClicked() {
+	public void testNewButtonShouldClearTextBoxesAndDeselectNoteFromTheListAndResetTheErrorLabelWhenClicked() {
 		GuiActionRunner.execute(
-				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body")));
+				() -> notebookSwingView.getListNotesModel().addElement(new Note("2000-01-01", "Title", "Body"))
+		);
 		window.list("noteList").selectItem(0);
+		GuiActionRunner.execute(
+				() -> notebookSwingView.getLblError().setText("error")
+		);
 		window.button(JButtonMatcher.withText("New")).click();
 		assertThat(window.textBox("date").text()).isEmpty();
 		assertThat(window.textBox("title").text()).isEmpty();
 		assertThat(window.textBox("body").text()).isEmpty();
 		window.list("noteList").requireNoSelection();
+		window.label("errorMessageLabel").requireText(" ");
 	}
 
 }
