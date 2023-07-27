@@ -158,6 +158,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 			textTitle.setText("");
 			textBody.setText("");
 			listNotes.clearSelection();
+			lblError.setText(" ");
 		});
 		btnNew.setEnabled(false);
 		GridBagConstraints gbcBtnNew = new GridBagConstraints();
@@ -169,8 +170,8 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 		btnModify = new JButton("Modify");
 		getBtnModify().addActionListener(e -> {
 			notebookController.modifyNote(
-				listNotes.getSelectedValue().getId(),
-				new Note(textDate.getText(), textTitle.getText(), textBody.getText()));
+					listNotes.getSelectedValue().getId(),
+					new Note(textDate.getText(), textTitle.getText(), textBody.getText()));
 			getBtnModify().setEnabled(false);
 		});
 		getBtnModify().setEnabled(false);
@@ -183,7 +184,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(
-			e -> notebookController.deleteNote(listNotes.getSelectedValue())
+				e -> notebookController.deleteNote(listNotes.getSelectedValue())
 		);
 		btnDelete.setEnabled(false);
 		GridBagConstraints gbcBtnDelete = new GridBagConstraints();
@@ -300,7 +301,7 @@ public class NotebookSwingView extends JFrame implements NotebookView {
 	}
 
 	private void resetErrorlabel() {
-		getLblError().setText(" ");
+		lblError.setText(" ");
 	}
 
 }
