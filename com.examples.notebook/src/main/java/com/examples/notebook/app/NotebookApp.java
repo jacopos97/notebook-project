@@ -63,7 +63,7 @@ public class NotebookApp implements Callable<Void> {
 									collectionName);
 						} else {
 							LOGGER.error(
-									"If you want to use a MySQL database, you must pass: root's password, user and user's password");
+									"If you want to use a MySQL database, you must insert: root's password, user and user's password");
 							return;
 						}
 					} else {
@@ -79,7 +79,7 @@ public class NotebookApp implements Callable<Void> {
 					notebookController.getAllNotes();
 				} else {
 					LOGGER.error(
-							"Database and collection name must be only alphabet's letters");
+							"Database and collection names must be only alphabet letters");
 				}
 			} catch (Exception e) {
 				LOGGER.error("Exception", e);

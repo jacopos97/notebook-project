@@ -70,7 +70,7 @@ public class NotebookControllerTest {
 				.thenReturn(existingNote);
 		notebookController.addNote(noteToAdd);
 		verify(notebookView)
-				.showError("Change date and/or title. Already exist a note with the same attributes.");
+				.showError("Change date and/or title. A note with the same attributes already exists.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 
@@ -79,7 +79,7 @@ public class NotebookControllerTest {
 		var note = new Note("2000-01-051", "Title", "Body");
 		notebookController.addNote(note);
 		verify(notebookView)
-				.showError("Note's date must have yyyy-MM-dd form and must be valid.");
+				.showError("Note's date must have yyyy-MM-dd format and be valid.");
 		verifyNoMoreInteractions(notesRepository);
 	}
 
@@ -130,7 +130,7 @@ public class NotebookControllerTest {
 				.thenReturn(noteInRepository);
 		notebookController.modifyNote(noteToModify.getId(), noteModified);
 		verify(notebookView)
-				.showError("Change date and/or title. Already exist a note with the same attributes.");
+				.showError("Change date and/or title. A note with the same attributes already exists.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 	
@@ -167,7 +167,7 @@ public class NotebookControllerTest {
 				.thenReturn(noteToModify);
 		notebookController.modifyNote("2000-01-01_OldTitle", noteModified);
 		verify(notebookView)
-				.showError("Note's date must have yyyy-MM-dd form and must be valid.");
+				.showError("Note's date must have yyyy-MM-dd format and be valid.");
 		verifyNoMoreInteractions(ignoreStubs(notesRepository));
 	}
 

@@ -57,7 +57,7 @@ public class NotebookController {
 		try {
 			LocalDate.parse(noteModified.getDate());
 		} catch (Exception e) {
-			notebookView.showError("Note's date must have yyyy-MM-dd form and must be valid.");
+			notebookView.showError("Note's date must have yyyy-MM-dd format and be valid.");
 			return false;
 		}
 		return true;
@@ -66,7 +66,7 @@ public class NotebookController {
 	private boolean checkIdValidity(Note noteModified) {
 		if (notesRepository.findById(noteModified.getId()) != null) {
 			notebookView.showError(
-					"Change date and/or title. Already exist a note with the same attributes.");
+					"Change date and/or title. A note with the same attributes already exists.");
 			return false;
 		}
 		return true;

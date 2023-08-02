@@ -85,7 +85,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel").requireText(
-				"Note's date must have yyyy-MM-dd form and must be valid.");
+				"Note's date must have yyyy-MM-dd format and be valid.");
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel")
 				.requireText(
-						"Change date and/or title. Already exist a note with the same attributes.");
+						"Change date and/or title. A note with the same attributes already exists.");
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		assertThat(window.list().contents()).containsExactly(note.toString());
 		window.label("errorMessageLabel")
 				.requireText(
-						"Note's date must have yyyy-MM-dd form and must be valid.");
+						"Note's date must have yyyy-MM-dd format and be valid.");
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class NotebookSwingViewIT extends AssertJSwingJUnitTestCase {
 		assertThat(window.list().contents()).containsExactly(note1.toString(), note2.toString());
 		window.label("errorMessageLabel")
 				.requireText(
-						"Change date and/or title. Already exist a note with the same attributes.");
+						"Change date and/or title. A note with the same attributes already exists.");
 	}
 
 }
